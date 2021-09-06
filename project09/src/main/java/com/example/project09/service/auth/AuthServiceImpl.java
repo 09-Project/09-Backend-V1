@@ -3,6 +3,7 @@ package com.example.project09.service.auth;
 import com.example.project09.entity.member.Member;
 import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.member.Role;
+import com.example.project09.exception.InvalidPasswordException;
 import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.AccessTokenResponse;
@@ -21,9 +22,8 @@ public class AuthServiceImpl implements AuthService {
 
     @Override
     public void signup(SignupRequest request) {
-        if(memberRepository.existsByNameOrUsername(request.getName(), request.getUsername())) {
+        if(memberRepository.existsByNameOrUsername(request.getName(), request.getUsername()))
             throw new IllegalArgumentException();
-        }
 
         Member member = Member.builder()
                 .name(request.getName())
@@ -41,9 +41,8 @@ public class AuthServiceImpl implements AuthService {
         Member member = memberRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new IllegalArgumentException());
 
-        if(!passwordEncoder.matches(request.getPassword(), member.getPassword())) {
-            throw new IllegalArgumentException();
-        }
+        if(!passwordEncoder.matches(request.getPassword(), member.getPassword()))
+            throw new InvalidPasswordException();
 
         return tokenProvider.createAccessToken(member.getUsername());
     }
