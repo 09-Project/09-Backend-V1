@@ -1,12 +1,12 @@
 package com.example.project09.entity.post;
 
+import com.example.project09.entity.BaseTimeEntity;
 import com.example.project09.entity.image.Image;
 import com.example.project09.entity.like.Like;
 import com.example.project09.entity.member.Member;
 import lombok.*;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
-import java.net.URL;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -14,12 +14,11 @@ import java.util.Set;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
-public class Post {
+@Entity(name = "tbl_post")
+public class Post extends BaseTimeEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "post_id")
     private Integer id;
 
     @NonNull
@@ -36,17 +35,18 @@ public class Post {
     private String transactionRegion;
 
     @NonNull
-    private URL openChatLink;
+    private String openChatLink;
 
+    @Enumerated(EnumType.STRING)
     private Purpose purpose;
 
-    @ManyToOne
-    @JoinColumn(name = "memberId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
     private Member member;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Like> likes = new HashSet<>();
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "post")
+    @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Image> images = new HashSet<>();
 }
