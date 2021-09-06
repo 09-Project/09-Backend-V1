@@ -38,6 +38,8 @@ public class Post {
     @NonNull
     private URL openChatLink;
 
+    private Purpose purpose;
+
     @ManyToOne
     @JoinColumn(name = "memberId")
     private Member member;
