@@ -12,18 +12,17 @@ import javax.persistence.*;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "tbl_image")
 public class Image {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "image_id")
     private Integer id;
     private String originalFilename;
     private String filename;
 
-    @ManyToOne
-    @JoinColumn(name = "postId")
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "post_id")
     private Post post;
 
     @OneToOne(fetch = FetchType.LAZY, mappedBy = "image")
