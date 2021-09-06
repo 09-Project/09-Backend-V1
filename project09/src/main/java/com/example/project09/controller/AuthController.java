@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private AuthServiceImpl authService;
+    private final AuthServiceImpl authService;
 
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequest request) {
@@ -23,7 +23,7 @@ public class AuthController {
     }
 
     @PostMapping("/login")
-    public AccessTokenResponse login(LoginRequest request) {
+    public AccessTokenResponse login(@RequestBody LoginRequest request) {
         return authService.login(request);
     }
 
