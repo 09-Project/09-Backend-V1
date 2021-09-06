@@ -1,6 +1,8 @@
 package com.example.project09.controller;
 
+import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
+import com.example.project09.payload.auth.response.AccessTokenResponse;
 import com.example.project09.service.auth.AuthServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -18,6 +20,11 @@ public class AuthController {
     @PostMapping("/signup")
     public String signup(@RequestBody SignupRequest request) {
         return authService.signup(request);
+    }
+
+    @PostMapping("/login")
+    public AccessTokenResponse login(LoginRequest request) {
+        return authService.login(request);
     }
 
 }
