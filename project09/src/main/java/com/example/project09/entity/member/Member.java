@@ -12,12 +12,11 @@ import javax.validation.constraints.Max;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity
+@Entity(name = "tbl_member")
 public class Member {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "member_id")
     private Integer id;
 
     @Max(value = 10)
@@ -32,7 +31,7 @@ public class Member {
     private String introduction;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "imageId")
+    @JoinColumn(name = "image_id")
     private Image image;
 
 }
