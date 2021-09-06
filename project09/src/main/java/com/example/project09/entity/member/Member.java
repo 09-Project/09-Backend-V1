@@ -7,6 +7,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
 import javax.validation.constraints.Max;
+import javax.validation.constraints.Size;
 
 @Getter
 @Builder
@@ -19,15 +20,14 @@ public class Member {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Max(value = 10)
-    @Column(unique = true)
+    @Column(length = 10, unique = true)
     private String name;
 
     @Column(unique = true)
     private String username;
     private String password;
 
-    @Max(value = 200)
+    @Column(length = 200)
     private String introduction;
 
     @Enumerated(EnumType.STRING)
