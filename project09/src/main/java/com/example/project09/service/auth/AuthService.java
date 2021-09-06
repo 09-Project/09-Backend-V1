@@ -5,6 +5,6 @@ import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.AccessTokenResponse;
 
 public interface AuthService {
-    String signup(SignupRequest request);
+    void signup(SignupRequest request);
     AccessTokenResponse login(LoginRequest request);
 }

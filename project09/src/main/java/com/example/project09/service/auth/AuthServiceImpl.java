@@ -2,6 +2,7 @@ package com.example.project09.service.auth;
 
 import com.example.project09.entity.member.Member;
 import com.example.project09.entity.member.MemberRepository;
+import com.example.project09.entity.member.Role;
 import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.AccessTokenResponse;
@@ -19,7 +20,7 @@ public class AuthServiceImpl implements AuthService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
-    public String signup(SignupRequest request) {
+    public void signup(SignupRequest request) {
         if(memberRepository.existsByNameOrUsername(request.getName(), request.getUsername())) {
             throw new IllegalArgumentException();
         }
@@ -29,11 +30,10 @@ public class AuthServiceImpl implements AuthService {
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .introduction(request.getIntroduction())
+                .role(Role.ROLE_USER)
                 .build();
 
         memberRepository.save(member);
-
-        return "success signup";
     }
 
     @Override
