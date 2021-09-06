@@ -30,6 +30,9 @@ public class Member {
     @Max(value = 200)
     private String introduction;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "image_id")
     private Image image;
