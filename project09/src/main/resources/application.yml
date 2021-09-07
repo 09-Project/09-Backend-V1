@@ -12,7 +12,7 @@ spring:
     username: ${DB_USER}
     password: ${DB_PWD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-R
+
 jwt:
   header: ${HEADER}
   prefix: ${PREFIX}

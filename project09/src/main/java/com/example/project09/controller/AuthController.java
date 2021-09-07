@@ -25,7 +25,7 @@ public class AuthController {
     }
 
     @PostMapping("/reissue")
-    public TokenResponse reissue(@RequestHeader(name = "X-Refresh-Token") String token) {
+    public TokenResponse reissue(@RequestHeader(name = "x-refresh-token") String token) {
         return authService.reissue(token);
     }
 
