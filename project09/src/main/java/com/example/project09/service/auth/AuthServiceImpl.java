@@ -61,7 +61,7 @@ public class AuthServiceImpl implements AuthService {
 
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
                 .map(refresh -> refresh.update(refreshTokenExpiration))
-                .orElseThrow(RefreshTokenNotFoundException::new);
+                .orElseThrow(InvalidTokenException::new);
 
         return new TokenResponse(tokenProvider.createAccessToken(
                 refreshToken.getUsername()), token);
