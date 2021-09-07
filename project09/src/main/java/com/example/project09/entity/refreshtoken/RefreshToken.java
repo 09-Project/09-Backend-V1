@@ -13,7 +13,7 @@ import org.springframework.data.redis.core.index.Indexed;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@RedisHash
+@RedisHash(value = "refresh_token")
 public class RefreshToken {
 
     @Id
