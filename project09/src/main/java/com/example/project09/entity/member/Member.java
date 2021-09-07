@@ -1,13 +1,11 @@
 package com.example.project09.entity.member;
 
-import com.example.project09.entity.image.Image;
+import com.example.project09.entity.image.MemberProfile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import javax.validation.constraints.Max;
-import javax.validation.constraints.Size;
 
 @Getter
 @Builder
@@ -33,8 +31,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "image_id")
-    private Image image;
+    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
+    private MemberProfile profile;
 
 }
