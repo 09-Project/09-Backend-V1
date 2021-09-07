@@ -17,6 +17,11 @@ spring:
     port: ${REDIS_PORT}
     host: ${REDIS_HOST}
 
+  servlet:
+    multipart:
+      maxFileSize: 1MB
+      maxRequestSize: 5MB
+
   jackson:
     property-naming-strategy: SNAKE_CASE
 

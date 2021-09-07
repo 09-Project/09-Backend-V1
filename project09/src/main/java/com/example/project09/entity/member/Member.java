@@ -1,6 +1,5 @@
 package com.example.project09.entity.member;
 
-import com.example.project09.entity.image.MemberProfile;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -30,8 +29,6 @@ public class Member {
 
     @Enumerated(EnumType.STRING)
     private Role role;
-
-    @OneToOne(fetch = FetchType.LAZY, mappedBy = "member")
-    private MemberProfile profile;
+    private String profileUrl;
 
 }
