@@ -1,6 +1,6 @@
 package com.example.project09.security.jwt;
 
-import com.example.project09.payload.auth.response.AccessTokenResponse;
+import com.example.project09.exception.InvalidTokenException;
 import com.example.project09.security.auth.CustomUserDetailsService;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
@@ -24,8 +24,11 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    @Value("${jwt.exp}")
+    @Value("${jwt.exp.acc}")
     private Long accessTokenExpiration;
+
+    @Value("${jwt.exp.ref}")
+    private Long refreshTokenExpiration;
 
     @Value("${jwt.header}")
     private String header;
@@ -39,16 +42,26 @@ public class JwtTokenProvider {
         return Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
-    public AccessTokenResponse createAccessToken(String username) {
-        return new AccessTokenResponse(
-                Jwts.builder()
-                        .setSubject(username)
-                        .setHeaderParam("typ", "JWT")
-                        .setIssuedAt(new Date())
-                        .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
-                        .signWith(SignatureAlgorithm.HS256, init())
-                        .compact()
-        );
+    public String createAccessToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("type", "access")
+                .setHeaderParam("typ", "JWT")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
+                .signWith(SignatureAlgorithm.HS256, init())
+                .compact();
+    }
+
+    public String createRefreshToken(String username) {
+        return Jwts.builder()
+                .setSubject(username)
+                .claim("type", "refresh")
+                .setHeaderParam("typ", "JWT")
+                .setIssuedAt(new Date())
+                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .signWith(SignatureAlgorithm.HS256, init())
+                .compact();
     }
 
     public Authentication getAuthentication(String token) {
@@ -75,8 +88,12 @@ public class JwtTokenProvider {
                     .getExpiration()
                     .before(new Date());
         } catch (Exception e) {
-            throw new IllegalArgumentException();
+            throw new InvalidTokenException();
         }
+    }
+
+    public boolean isRefreshToken(String token) {
+        return getUsername(token).get("type").equals("refresh");
     }
 
 }

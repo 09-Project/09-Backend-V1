@@ -1,23 +1,22 @@
 spring:
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     database: mysql
     generate-ddl: true
     database-platform: org.hibernate.dialect.MySQL5InnoDBDialect
     show-sql: true
-
-    jackson:
-      property-naming-strategy: SNAKE_CASE
 
   datasource:
     url: ${DB_URL}
     username: ${DB_USER}
     password: ${DB_PWD}
     driver-class-name: com.mysql.cj.jdbc.Driver
-
+R
 jwt:
-  exp: ${ACCESS}
   header: ${HEADER}
   prefix: ${PREFIX}
   secret: ${SECRET}
+  exp:
+    acc: ${ACCESS}
+    ref: ${REFRESH}
