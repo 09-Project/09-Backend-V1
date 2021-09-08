@@ -19,8 +19,8 @@ import org.springframework.stereotype.Service;
 @RequiredArgsConstructor
 public class AuthServiceImpl implements AuthService {
 
-    @Value("${jwt.exp.ref}")
-    private Long refreshTokenExpiration;
+    @Value("${jwt.exp.refresh}")
+    private Long REFRESH_TOKEN_EXPIRATION_TIME;
 
     private final MemberRepository memberRepository;
     private final JwtTokenProvider tokenProvider;
@@ -60,7 +60,7 @@ public class AuthServiceImpl implements AuthService {
             throw new InvalidTokenException();
 
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
-                .map(refresh -> refresh.update(refreshTokenExpiration))
+                .map(refresh -> refresh.update(REFRESH_TOKEN_EXPIRATION_TIME))
                 .orElseThrow(InvalidTokenException::new);
 
         return new TokenResponse(tokenProvider.createAccessToken(
@@ -75,7 +75,7 @@ public class AuthServiceImpl implements AuthService {
                 RefreshToken.builder()
                         .username(username)
                         .refreshToken(refreshToken)
-                        .refreshExpiration(refreshTokenExpiration)
+                        .refreshExpiration(REFRESH_TOKEN_EXPIRATION_TIME)
                         .build());
 
         return new TokenResponse(accessToken, refreshToken);

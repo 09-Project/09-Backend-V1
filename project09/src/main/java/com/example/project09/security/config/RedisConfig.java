@@ -12,14 +12,14 @@ import org.springframework.data.redis.repository.configuration.EnableRedisReposi
 public class RedisConfig {
 
     @Value("${spring.redis.host}")
-    private String redisHost;
+    private String REDIS_HOST;
 
     @Value("${spring.redis.port}")
-    private int redisPort;
+    private int REDIS_PORT;
 
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
-        return new LettuceConnectionFactory(redisHost, redisPort);
+        return new LettuceConnectionFactory(REDIS_HOST, REDIS_PORT);
     }
 
 }

@@ -22,24 +22,24 @@ import java.util.Date;
 public class JwtTokenProvider {
 
     @Value("${jwt.secret}")
-    private String secretKey;
-
-    @Value("${jwt.exp.acc}")
-    private Long accessTokenExpiration;
-
-    @Value("${jwt.exp.ref}")
-    private Long refreshTokenExpiration;
+    private String SECRET_KEY;
 
     @Value("${jwt.header}")
-    private String header;
+    private String HEADER;
 
     @Value("${jwt.prefix}")
-    private String prefix;
+    private String PREFIX;
+
+    @Value("${jwt.exp.access}")
+    private Long ACCESS_TOKEN_EXPIRATION_TIME;
+
+    @Value("${jwt.exp.refresh}")
+    private Long REFRESH_TOKEN_EXPIRATION_TIME;
 
     private final CustomUserDetailsService customUserDetailsService;
 
     protected String init() {
-        return Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
+        return Base64.getEncoder().encodeToString(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createAccessToken(String username) {
@@ -48,7 +48,7 @@ public class JwtTokenProvider {
                 .claim("type", "access")
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + accessTokenExpiration))
+                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, init())
                 .compact();
     }
@@ -59,7 +59,7 @@ public class JwtTokenProvider {
                 .claim("type", "refresh")
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date())
-                .setExpiration(new Date(System.currentTimeMillis() + refreshTokenExpiration))
+                .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
                 .signWith(SignatureAlgorithm.HS256, init())
                 .compact();
     }
@@ -74,9 +74,9 @@ public class JwtTokenProvider {
     }
 
     public String resolveToken(HttpServletRequest request) {
-        String token = request.getHeader(header);
+        String token = request.getHeader(HEADER);
 
-        if(StringUtils.hasText(token) && token.startsWith(prefix)) {
+        if(StringUtils.hasText(token) && token.startsWith(PREFIX)) {
             return token.substring(7);
         }
         return null;
