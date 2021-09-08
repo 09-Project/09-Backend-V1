@@ -1,6 +1,7 @@
 package com.example.project09.security.auth;
 
 import com.example.project09.entity.member.MemberRepository;
+import com.example.project09.exception.UserNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -16,7 +17,7 @@ public class CustomUserDetailsService implements UserDetailsService {
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByUsername(username)
                 .map(CustomUserDetails::new)
-                .orElseThrow(() -> new IllegalArgumentException());
+                .orElseThrow(UserNotFoundException::new);
     }
 
 }
