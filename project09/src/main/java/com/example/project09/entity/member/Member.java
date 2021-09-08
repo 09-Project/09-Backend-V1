@@ -31,4 +31,15 @@ public class Member {
     private Role role;
     private String profileUrl;
 
+    public Member updatePassword(String password) {
+        this.password = password;
+        return this;
+    }
+
+    public Member updateInfo(String name, String introduction) {
+        this.name = name;
+        this.introduction = introduction;
+        return this;
+    }
+
 }
