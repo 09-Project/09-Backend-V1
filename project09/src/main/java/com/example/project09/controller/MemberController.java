@@ -24,7 +24,8 @@ public class MemberController {
     }
 
     @PatchMapping("/information")
-    public void updateInfo(@RequestBody InformationRequest request) {
-        memberService.updateInfo(request);
+    public void updateInfo(@RequestBody InformationRequest request,
+                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+        memberService.updateInfo(request, userDetails.getMember());
     }
 }

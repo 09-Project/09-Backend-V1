@@ -27,8 +27,8 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public void updateInfo(InformationRequest request) {
-        memberRepository.findByName(request.getName())
+    public void updateInfo(InformationRequest request, Member member) {
+        memberRepository.findByUsername(member.getUsername())
                 .map(info -> memberRepository.save(
                         info.updateInfo(request.getName(), request.getIntroduction())
                 ))

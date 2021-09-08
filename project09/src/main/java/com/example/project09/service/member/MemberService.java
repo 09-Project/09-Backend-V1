@@ -6,5 +6,5 @@ import com.example.project09.payload.member.request.PasswordRequest;
 
 public interface MemberService {
     void updatePassword(PasswordRequest request, Member member);
-    void updateInfo(InformationRequest request);
+    void updateInfo(InformationRequest request, Member member);
 }
