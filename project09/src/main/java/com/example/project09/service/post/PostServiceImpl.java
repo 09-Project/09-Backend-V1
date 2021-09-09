@@ -8,10 +8,11 @@ import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
 import com.example.project09.exception.PostNotFoundException;
 import com.example.project09.payload.post.request.PostRequest;
+import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
+import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -64,6 +65,26 @@ public class PostServiceImpl implements PostService {
                             .orElseThrow(PostNotFoundException::new)
             );
         }
+    }
+
+    public List<PostResponse> getAllPost() {
+        return postRepository.findAll()
+                .stream()
+                .map(post -> {
+                    PostResponse response = PostResponse.builder()
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .price(post.getPrice())
+                            .transactionRegion(post.getTransactionRegion())
+                            .openChatLink(post.getOpenChatLink())
+                            .createdDate(post.getCreatedDate())
+                            .updatedDate(post.getUpdatedDate())
+                            .images(imageRepository.findByOrderByPostId(post)
+                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                            .build();
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
 
 
