@@ -6,10 +6,13 @@ import com.example.project09.entity.member.Member;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
+import com.example.project09.exception.PostNotFoundException;
 import com.example.project09.payload.post.request.PostRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -38,7 +41,30 @@ public class PostServiceImpl implements PostService {
                     .post(post)
                     .build());
         }
-
     }
+
+    @Override
+    public void modifyPost(PostRequest request, Integer id) {
+        postRepository.save(
+                postRepository.findById(id)
+                        .map(post -> post.updatePost(
+                                request.getTitle(),
+                                request.getContent(),
+                                request.getPrice(),
+                                request.getTransactionRegion(),
+                                request.getOpenChatLink()
+                        ))
+                        .orElseThrow(PostNotFoundException::new)
+        );
+
+        for (MultipartFile file : request.getMultipartFiles()) {
+            imageRepository.save(
+                    imageRepository.findByPostId(id)
+                            .map(image -> image.updateProfileUrl(file.getOriginalFilename()))
+                            .orElseThrow(PostNotFoundException::new)
+            );
+        }
+    }
+
 
 }

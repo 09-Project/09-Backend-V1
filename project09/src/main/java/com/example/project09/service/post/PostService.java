@@ -5,4 +5,5 @@ import com.example.project09.payload.post.request.PostRequest;
 
 public interface PostService {
     void createPost(PostRequest request, Member member);
+    void modifyPost(PostRequest request, Integer id);
 }
