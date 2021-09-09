@@ -1,6 +1,5 @@
 package com.example.project09.payload.post.response;
 
-import com.example.project09.entity.image.Image;
 import com.example.project09.entity.post.Purpose;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -14,6 +13,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class PostResponse {
+    private Integer id;
     private String title;
     private String content;
     private Integer price;

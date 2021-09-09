@@ -77,6 +77,7 @@ public class PostServiceImpl implements PostService {
                 .stream()
                 .map(post -> {
                     PostResponse response = PostResponse.builder()
+                            .id(post.getId())
                             .title(post.getTitle())
                             .content(post.getContent())
                             .price(post.getPrice())
