@@ -82,9 +82,10 @@ public class PostServiceImpl implements PostService {
                             .price(post.getPrice())
                             .transactionRegion(post.getTransactionRegion())
                             .openChatLink(post.getOpenChatLink())
+                            .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findByOrderByPostId(post)
+                            .images(imageRepository.findAllByPostId(post.getId())
                                     .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
                             .build();
                     return response;
