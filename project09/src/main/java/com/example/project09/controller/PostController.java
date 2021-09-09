@@ -7,6 +7,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -14,9 +15,9 @@ import org.springframework.web.bind.annotation.*;
 public class PostController {
     private final PostServiceImpl postService;
 
-    @PostMapping(path = "crate", consumes = {"multipart/form-data"})
+    @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public void createPost(@ModelAttribute CreatePostRequest request,
+    public void createPost(@Valid @ModelAttribute CreatePostRequest request,
                            @AuthenticationPrincipal CustomUserDetails customUserDetails) {
         postService.create(request, customUserDetails.getMember());
     }

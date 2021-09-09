@@ -28,6 +28,7 @@ public class PostServiceImpl implements PostService {
                 .member(member)
                 .build());
 
+        if(post.getPrice() == null) postRepository.save(post.updatePurpose(Purpose.DONATION));
         imageRepository.save(Image.builder()
                 .profileUrl(request.getMultipartFile().getOriginalFilename())
                 .post(post)

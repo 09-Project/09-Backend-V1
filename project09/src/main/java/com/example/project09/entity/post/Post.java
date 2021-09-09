@@ -27,7 +27,6 @@ public class Post extends BaseTimeEntity {
     @Column(length = 500)
     private String content;
 
-    @NonNull
     private Integer price;
 
     @NonNull
@@ -48,4 +47,10 @@ public class Post extends BaseTimeEntity {
 
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Image> images = new HashSet<>();
+
+    public Post updatePurpose(Purpose purpose) {
+        this.purpose = purpose;
+        return this;
+    }
+
 }
