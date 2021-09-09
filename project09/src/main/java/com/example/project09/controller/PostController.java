@@ -22,4 +22,10 @@ public class PostController {
         postService.createPost(request, userDetails.getMember());
     }
 
+    @PatchMapping(value = "/modify/{user-id}", consumes = {"multipart/form-data"})
+    public void modifyPost(@PathVariable(name = "user-id") Integer id,
+                           @ModelAttribute PostRequest request) {
+        postService.modifyPost(request, id);
+    }
+
 }
