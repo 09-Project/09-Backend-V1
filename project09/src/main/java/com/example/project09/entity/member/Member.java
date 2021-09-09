@@ -1,10 +1,12 @@
 package com.example.project09.entity.member;
 
+import com.example.project09.entity.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @Builder
@@ -30,6 +32,9 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String profileUrl;
+
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    private List<Post> posts;
 
     public Member updatePassword(String password) {
         this.password = password;

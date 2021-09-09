@@ -6,7 +6,6 @@ import com.example.project09.entity.like.Like;
 import com.example.project09.entity.member.Member;
 import lombok.*;
 import javax.persistence.*;
-import javax.validation.constraints.Max;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -22,10 +21,10 @@ public class Post extends BaseTimeEntity {
     private Integer id;
 
     @NonNull
-    @Max(value = 40)
+    @Column(length = 40)
     private String title;
 
-    @Max(value = 500)
+    @Column(length = 500)
     private String content;
 
     @NonNull
