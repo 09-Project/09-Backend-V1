@@ -1,6 +1,7 @@
 package com.example.project09.controller;
 
 import com.example.project09.payload.post.request.PostRequest;
+import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.security.auth.CustomUserDetails;
 import com.example.project09.service.post.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -8,6 +9,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -26,6 +28,11 @@ public class PostController {
     public void modifyPost(@PathVariable(name = "user-id") Integer id,
                            @ModelAttribute PostRequest request) {
         postService.modifyPost(request, id);
+    }
+
+    @GetMapping("")
+    public List<PostResponse> getAllPost() {
+        return postService.getAllPost();
     }
 
 }
