@@ -11,6 +11,7 @@ import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.util.List;
 import java.util.stream.Collectors;
@@ -22,6 +23,7 @@ public class PostServiceImpl implements PostService {
     private final ImageRepository imageRepository;
 
     @Override
+    @Transactional
     public void createPost(PostRequest request, Member member) {
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
@@ -45,6 +47,7 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional
     public void modifyPost(PostRequest request, Integer id) {
         postRepository.save(
                 postRepository.findById(id)
@@ -67,6 +70,8 @@ public class PostServiceImpl implements PostService {
         }
     }
 
+    @Override
+    @Transactional(readOnly = true)
     public List<PostResponse> getAllPost() {
         return postRepository.findAll()
                 .stream()

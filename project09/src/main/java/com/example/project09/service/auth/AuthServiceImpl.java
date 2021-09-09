@@ -14,6 +14,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -28,6 +29,7 @@ public class AuthServiceImpl implements AuthService {
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
+    @Transactional
     public void signup(SignupRequest request) {
         if(memberRepository.existsByNameOrUsername(request.getName(), request.getUsername()))
             throw new UserAlreadyExistsException();
@@ -43,6 +45,7 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public TokenResponse login(LoginRequest request) {
         Member member = memberRepository.findByUsername(request.getUsername())
                 .orElseThrow(() -> new UserNotFoundException());
@@ -54,18 +57,21 @@ public class AuthServiceImpl implements AuthService {
     }
 
     @Override
+    @Transactional
     public TokenResponse reissue(String token) {
         if(!tokenProvider.validateToken(token) || !tokenProvider.isRefreshToken(token))
             throw new InvalidTokenException();
 
         RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
-                .map(refresh -> refresh.update(REFRESH_TOKEN_EXPIRATION_TIME))
+                .map(refresh -> refreshTokenRepository.save(
+                        refresh.update(REFRESH_TOKEN_EXPIRATION_TIME)
+                ))
                 .orElseThrow(InvalidTokenException::new);
 
-        return new TokenResponse(tokenProvider.createAccessToken(
-                refreshToken.getUsername()), token);
+        return new TokenResponse(tokenProvider.createAccessToken(refreshToken.getUsername()), token);
     }
 
+    @Transactional
     public TokenResponse createToken(String username) {
         String accessToken = tokenProvider.createAccessToken(username);
         String refreshToken = tokenProvider.createRefreshToken(username);

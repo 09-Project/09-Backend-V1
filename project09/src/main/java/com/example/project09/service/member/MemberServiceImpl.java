@@ -9,6 +9,7 @@ import com.example.project09.payload.member.request.PasswordRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -17,6 +18,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
 
     @Override
+    @Transactional
     public void updatePassword(PasswordRequest request, Member member) {
         checkPassword(request.getPassword(), member.getUsername());
         memberRepository.findByUsername(member.getUsername())
@@ -27,6 +29,7 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
+    @Transactional
     public void updateInfo(InformationRequest request, Member member) {
         memberRepository.findByUsername(member.getUsername())
                 .map(info -> memberRepository.save(
