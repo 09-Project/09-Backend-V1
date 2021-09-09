@@ -23,4 +23,9 @@ public class Image {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public Image updateProfileUrl(String profileUrl) {
+        this.profileUrl = profileUrl;
+        return this;
+    }
+
 }
