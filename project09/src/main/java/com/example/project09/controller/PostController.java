@@ -31,8 +31,13 @@ public class PostController {
     }
 
     @GetMapping("")
-    public List<PostResponse> getAllPost() {
-        return postService.getAllPost();
+    public List<PostResponse> getAllPosts() {
+        return postService.getAllPosts();
+    }
+
+    @GetMapping("/member")
+    public List<PostResponse> getMemberPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
+        return postService.getMemberPosts(userDetails.getMember());
     }
 
 }
