@@ -14,6 +14,7 @@ import java.util.List;
 @AllArgsConstructor
 public class PostResponse {
     private Integer id;
+    private String name;
     private String title;
     private String content;
     private Integer price;

@@ -9,5 +9,6 @@ import java.util.List;
 public interface PostService {
     void createPost(PostRequest request, Member member);
     void modifyPost(PostRequest request, Integer id);
-    List<PostResponse> getAllPost();
+    List<PostResponse> getAllPosts();
+    List<PostResponse> getMemberPosts(Member member);
 }
