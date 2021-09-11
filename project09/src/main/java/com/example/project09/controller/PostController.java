@@ -1,6 +1,7 @@
 package com.example.project09.controller;
 
 import com.example.project09.payload.post.request.PostRequest;
+import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.security.auth.CustomUserDetails;
 import com.example.project09.service.post.PostServiceImpl;
@@ -38,6 +39,11 @@ public class PostController {
     @GetMapping("/member")
     public List<PostResponse> getMemberPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
         return postService.getMemberPosts(userDetails.getMember());
+    }
+
+    @GetMapping("/{post-id}")
+    public EachPostResponse getEachPost(@PathVariable(name = "post-id") Integer id) {
+        return postService.getEachPost(id);
     }
 
 }
