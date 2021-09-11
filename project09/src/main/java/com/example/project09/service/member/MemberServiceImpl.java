@@ -3,6 +3,7 @@ package com.example.project09.service.member;
 import com.example.project09.entity.member.Member;
 import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.exception.InvalidPasswordException;
+import com.example.project09.exception.UserAlreadyExistsException;
 import com.example.project09.exception.UserNotFoundException;
 import com.example.project09.payload.member.request.InformationRequest;
 import com.example.project09.payload.member.request.PasswordRequest;
@@ -31,6 +32,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void updateInfo(InformationRequest request, Member member) {
+        if(memberRepository.existsByName(request.getName()))
+            throw new UserAlreadyExistsException();
+
         memberRepository.findByUsername(member.getUsername())
                 .map(info -> memberRepository.save(
                         info.updateInfo(request.getName(), request.getIntroduction())
@@ -42,7 +46,8 @@ public class MemberServiceImpl implements MemberService {
         Member member = memberRepository.findByUsername(username)
                 .orElseThrow(UserNotFoundException::new);
 
-        if(!passwordEncoder.matches(password, member.getPassword())) throw new InvalidPasswordException();
+        if (!passwordEncoder.matches(password, member.getPassword()))
+            throw new InvalidPasswordException();
     }
 
 }
