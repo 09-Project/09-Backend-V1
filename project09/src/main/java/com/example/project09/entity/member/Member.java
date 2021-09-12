@@ -1,6 +1,7 @@
 package com.example.project09.entity.member;
 
 import com.example.project09.entity.post.Post;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -13,6 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "tbl_member")
+@JsonIgnoreProperties({"username", "password", "posts"})
 public class Member {
 
     @Id
