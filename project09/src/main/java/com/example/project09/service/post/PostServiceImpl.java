@@ -3,12 +3,10 @@ package com.example.project09.service.post;
 import com.example.project09.entity.image.Image;
 import com.example.project09.entity.image.ImageRepository;
 import com.example.project09.entity.member.Member;
-import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
 import com.example.project09.exception.PostNotFoundException;
-import com.example.project09.exception.UserNotFoundException;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
@@ -24,7 +22,6 @@ import java.util.stream.Collectors;
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
-    private final MemberRepository memberRepository;
 
     @Override
     @Transactional
@@ -138,21 +135,12 @@ public class PostServiceImpl implements PostService {
                     post.getCreatedDate();
                     post.getUpdatedDate();
                     post.getImages();
+                    post.getMember();
                     return post;
                 })
                 .orElseThrow(PostNotFoundException::new);
 
-
-        Member memberDetails = memberRepository.findByName(postDetails.getMember().getName())
-                .map(member -> {
-                    member.getName();
-                    member.getProfileUrl();
-                    member.getIntroduction();
-                    return member;
-                })
-                .orElseThrow(UserNotFoundException::new);
-
-        return new EachPostResponse(postDetails, memberDetails);
+        return new EachPostResponse(postDetails);
     }
 
 
