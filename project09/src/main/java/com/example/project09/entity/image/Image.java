@@ -1,6 +1,7 @@
 package com.example.project09.entity.image;
 
 import com.example.project09.entity.post.Post;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -12,6 +13,7 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "tbl_image")
+@JsonIgnoreProperties("post")
 public class Image {
 
     @Id
