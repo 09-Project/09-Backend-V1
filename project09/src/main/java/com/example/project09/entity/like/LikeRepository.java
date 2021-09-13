@@ -7,6 +7,7 @@ import java.util.Optional;
 
 public interface LikeRepository extends JpaRepository<Like, Integer> {
     Optional<Like> findByMemberAndPostId(Member member, Integer postId);
-    Integer countByPostId(Integer id);
     List<Like> findByMemberId(Integer id);
+    Integer countByPostId(Integer id);
+    boolean existsByMemberIdAndPostId(Integer memberId, Integer postId);
 }
