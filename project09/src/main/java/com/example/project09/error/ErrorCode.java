@@ -15,7 +15,8 @@ public enum ErrorCode {
 
     POST_NOT_FOUND(404, "Post Not Found"),
 
-    LIKE_NOT_FOUND(404, "Like Not Found");
+    LIKE_NOT_FOUND(404, "Like Not Found"),
+    LIKE_ALREADY_EXISTS(409, "Like Already Exists");
 
     private final int status;
     private final String message;

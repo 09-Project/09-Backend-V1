@@ -9,6 +9,7 @@ import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
+import com.example.project09.exception.LikeAlreadyExistsException;
 import com.example.project09.exception.LikeNotFoundException;
 import com.example.project09.exception.PostNotFoundException;
 import com.example.project09.payload.post.request.PostRequest;
@@ -103,7 +104,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public EachPostResponse getEachPost(Integer id) { // 좋아요 기능, 다른 상품 보기 추가
+    public EachPostResponse getEachPost(Integer id) { // 다른 상품 보기 추가
         return postRepository.findById(id)
                 .map(post -> {
                     EachPostResponse response = EachPostResponse.builder()
@@ -127,6 +128,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void addLike(Integer id, Member member) {
+        if(!likeRepository.existsByMemberIdAndPostId(member.getId(), id))
+            throw new LikeAlreadyExistsException();
+
         likeRepository.save(
                 Like.builder()
                         .post(postRepository.findById(id).orElseThrow(PostNotFoundException::new))
