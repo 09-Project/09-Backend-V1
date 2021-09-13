@@ -25,7 +25,7 @@ public class PostController {
         postService.createPost(request, userDetails.getMember());
     }
 
-    @PatchMapping(value = "/modify/{user-id}", consumes = {"multipart/form-data"})
+    @PatchMapping(path = "/modify/{user-id}", consumes = {"multipart/form-data"})
     public void modifyPost(@PathVariable(name = "user-id") Integer id,
                            @ModelAttribute PostRequest request) {
         postService.modifyPost(request, id);
@@ -34,11 +34,6 @@ public class PostController {
     @GetMapping("")
     public List<PostResponse> getAllPosts() {
         return postService.getAllPosts();
-    }
-
-    @GetMapping("/member")
-    public List<PostResponse> getMemberPosts(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return postService.getMemberPosts(userDetails.getMember());
     }
 
     @GetMapping("/{post-id}")
