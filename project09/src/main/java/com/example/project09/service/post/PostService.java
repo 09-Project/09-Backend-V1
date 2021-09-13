@@ -11,4 +11,5 @@ public interface PostService {
     void modifyPost(PostRequest request, Integer id);
     List<PostResponse> getAllPosts();
     EachPostResponse getEachPost(Integer id);
+    void addLike(Integer id, Member member);
 }

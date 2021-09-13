@@ -2,6 +2,7 @@ package com.example.project09.service.post;
 
 import com.example.project09.entity.image.Image;
 import com.example.project09.entity.image.ImageRepository;
+import com.example.project09.entity.like.LikeRepository;
 import com.example.project09.entity.member.Member;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
@@ -19,13 +20,14 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PostServiceImpl implements PostService {
+public class PostServiceImpl implements PostService { // 검색 기능 추가
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
+    private final LikeRepository likeRepository;
 
     @Override
     @Transactional
-    public void createPost(PostRequest request, Member member) {
+    public void createPost(PostRequest request, Member member) { // 대표 이미지 설정
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -85,7 +87,7 @@ public class PostServiceImpl implements PostService {
                             .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findAllByPostId(post.getId())
+                            .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
                                     .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
                             .build();
                     return response;
@@ -95,7 +97,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public EachPostResponse getEachPost(Integer id) {
+    public EachPostResponse getEachPost(Integer id) { // 좋아요 기능, 다른 상품 보기 추가
         return postRepository.findById(id)
                 .map(post -> {
                     EachPostResponse response = EachPostResponse.builder()
@@ -107,13 +109,24 @@ public class PostServiceImpl implements PostService {
                             .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findAllByPostId(post.getId())
+                            .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
                                     .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
                             .member(post.getMember())
                             .build();
                     return response;
                 })
                 .orElseThrow(PostNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public void addLike(Integer id, Member member) {
+
+    }
+
+    @Transactional
+    public void removeLike(Member member) {
+
     }
 
 
