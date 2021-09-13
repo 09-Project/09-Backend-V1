@@ -6,6 +6,9 @@ import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.security.auth.CustomUserDetails;
 import com.example.project09.service.post.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
@@ -38,13 +41,19 @@ public class PostController {
     }
 
     @GetMapping("")
-    public List<PostResponse> getAllPosts() {
-        return postService.getAllPosts();
+    public List<PostResponse> getAllPosts(@PageableDefault(size = 2, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return postService.getAllPosts(pageable);
     }
 
     @GetMapping("/{post-id}")
     public EachPostResponse getEachPost(@PathVariable(name = "post-id") Integer id) {
         return postService.getEachPost(id);
+    }
+
+    @GetMapping("/search")
+    public List<PostResponse> searchPosts(@RequestParam String keyword,
+                                          @PageableDefault(size = 16, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+        return postService.searchPosts(keyword, pageable);
     }
 
 }
