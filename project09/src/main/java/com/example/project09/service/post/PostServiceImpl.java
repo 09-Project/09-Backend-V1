@@ -39,7 +39,7 @@ public class PostServiceImpl implements PostService {
         if(post.getPrice() == null)
             postRepository.save(post.updatePurpose(Purpose.DONATION));
 
-        for (MultipartFile file : request.getMultipartFiles()) {
+        for (MultipartFile file : request.getImages()) {
             imageRepository.save(Image.builder()
                     .profileUrl(file.getOriginalFilename())
                     .post(post)
@@ -62,7 +62,7 @@ public class PostServiceImpl implements PostService {
                         .orElseThrow(PostNotFoundException::new)
         );
 
-        for (MultipartFile file : request.getMultipartFiles()) {
+        for (MultipartFile file : request.getImages()) {
             imageRepository.save(
                     imageRepository.findByPostId(id)
                             .map(image -> image.updateProfileUrl(file.getOriginalFilename()))
@@ -79,31 +79,6 @@ public class PostServiceImpl implements PostService {
                 .map(post -> {
                     PostResponse response = PostResponse.builder()
                             .id(post.getId())
-                            .title(post.getTitle())
-                            .content(post.getContent())
-                            .price(post.getPrice())
-                            .transactionRegion(post.getTransactionRegion())
-                            .openChatLink(post.getOpenChatLink())
-                            .purpose(post.getPurpose())
-                            .createdDate(post.getCreatedDate())
-                            .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findAllByPostId(post.getId())
-                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
-                            .build();
-                    return response;
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Override
-    @Transactional(readOnly = true)
-    public List<PostResponse> getMemberPosts(Member member) {
-        return postRepository.findByMemberId(member.getId())
-                .stream()
-                .map(post -> {
-                    PostResponse response = PostResponse.builder()
-                            .id(post.getId())
-                            .name(post.getMember().getName())
                             .title(post.getTitle())
                             .content(post.getContent())
                             .price(post.getPrice())
