@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberProfileResponse getMemberProfile(Integer id) { // 상품 수, 좋아요 수 표시
+    public MemberProfileResponse getMemberProfile(Integer id) { // 받은 찜 개수 표시
         return memberRepository.findById(id)
                 .map(member -> {
                     MemberProfileResponse memberProfileResponse = MemberProfileResponse.builder()
@@ -80,6 +80,8 @@ public class MemberServiceImpl implements MemberService {
                                                 .build();
                                         return postResponse;
                                     }).collect(Collectors.toList()))
+                            .postsCount(postRepository.countByMemberId(id))
+                            .likePostsCount(likeRepository.countByMemberId(id))
                             .build();
                     return memberProfileResponse;
                 })
@@ -88,7 +90,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberMyPageResponse getMyPage(Member member) { // 상품 수, 좋아요 수, 찜한 상품 수 표시
+    public MemberMyPageResponse getMyPage(Member member) { // 내가 찜한 게시글 수정
         MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
 
         List<Set<Image>> images = likeRepository.findByMemberId(member.getId()) // 제목 표시
