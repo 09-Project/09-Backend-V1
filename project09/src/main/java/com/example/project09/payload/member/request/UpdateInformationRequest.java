@@ -6,7 +6,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @Getter
 @AllArgsConstructor
-public class InformationRequest {
+public class UpdateInformationRequest {
     private String name;
     private String introduction;
     private MultipartFile profile;

@@ -8,8 +8,8 @@ import com.example.project09.entity.post.PostRepository;
 import com.example.project09.exception.InvalidPasswordException;
 import com.example.project09.exception.UserAlreadyExistsException;
 import com.example.project09.exception.UserNotFoundException;
-import com.example.project09.payload.member.request.InformationRequest;
-import com.example.project09.payload.member.request.PasswordRequest;
+import com.example.project09.payload.member.request.UpdateInformationRequest;
+import com.example.project09.payload.member.request.UpdatePasswordRequest;
 import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +28,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updatePassword(PasswordRequest request, Member member) {
+    public void updatePassword(UpdatePasswordRequest request, Member member) {
         checkPassword(request.getPassword(), member.getUsername());
         memberRepository.findByUsername(member.getUsername())
                 .map(password -> memberRepository.save(
@@ -39,7 +39,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateInfo(InformationRequest request, Member member) {
+    public void updateInfo(UpdateInformationRequest request, Member member) {
         if(memberRepository.existsByName(request.getName()))
             throw new UserAlreadyExistsException();
 
@@ -59,12 +59,9 @@ public class MemberServiceImpl implements MemberService {
                 .map(post -> {
                     PostResponse response = PostResponse.builder()
                             .id(post.getId())
-                            .name(post.getMember().getName())
                             .title(post.getTitle())
-                            .content(post.getContent())
                             .price(post.getPrice())
                             .transactionRegion(post.getTransactionRegion())
-                            .openChatLink(post.getOpenChatLink())
                             .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
@@ -74,6 +71,11 @@ public class MemberServiceImpl implements MemberService {
                     return response;
                 })
                 .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public void getMemberProfile(Integer id) {
+
     }
 
     public void checkPassword(String password, String username) {
