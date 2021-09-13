@@ -35,7 +35,7 @@ public class Member {
     private Role role;
     private String profileUrl;
 
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member")
+    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Post> posts;
 
     public Member updatePassword(String password) {
