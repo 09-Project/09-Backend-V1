@@ -2,16 +2,20 @@ package com.example.project09.service.post;
 
 import com.example.project09.entity.image.Image;
 import com.example.project09.entity.image.ImageRepository;
+import com.example.project09.entity.like.Like;
 import com.example.project09.entity.like.LikeRepository;
 import com.example.project09.entity.member.Member;
+import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
+import com.example.project09.exception.LikeNotFoundException;
 import com.example.project09.exception.PostNotFoundException;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,6 +27,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
+    private final MemberRepository memberRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
 
@@ -76,8 +81,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts(Pageable pageable) {
-        return postRepository.findAll()
+    public List<PostResponse> getAllPosts(Pageable pageable) { // 페이징 처리
+        return postRepository.findAll(pageable)
                 .stream()
                 .map(post -> {
                     PostResponse response = PostResponse.builder()
@@ -122,12 +127,19 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void addLike(Integer id, Member member) {
-
+        likeRepository.save(
+                Like.builder()
+                        .post(postRepository.findById(id).orElseThrow(PostNotFoundException::new))
+                        .member(member)
+                        .build());
     }
 
+    @Override
     @Transactional
-    public void removeLike(Member member) {
-
+    public void removeLike(Integer id, Member member) {
+        likeRepository.delete(
+                likeRepository.findByMemberAndPostId(member, id).orElseThrow(LikeNotFoundException::new)
+        );
     }
 
     @Override
