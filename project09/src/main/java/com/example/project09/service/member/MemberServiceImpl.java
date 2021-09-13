@@ -10,12 +10,12 @@ import com.example.project09.exception.UserAlreadyExistsException;
 import com.example.project09.exception.UserNotFoundException;
 import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
+import com.example.project09.payload.member.response.MemberProfileResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
 import java.util.stream.Collectors;
 
 @Service
@@ -53,29 +53,33 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> getMemberPosts(Member member) {
-        return postRepository.findByMemberId(member.getId())
-                .stream()
-                .map(post -> {
-                    PostResponse response = PostResponse.builder()
-                            .id(post.getId())
-                            .title(post.getTitle())
-                            .price(post.getPrice())
-                            .transactionRegion(post.getTransactionRegion())
-                            .purpose(post.getPurpose())
-                            .createdDate(post.getCreatedDate())
-                            .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findAllByPostId(post.getId())
-                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+    public MemberProfileResponse getMemberProfile(Integer id) {
+        return memberRepository.findById(id)
+                .map(member -> {
+                    MemberProfileResponse memberProfileResponse = MemberProfileResponse.builder()
+                            .name(member.getName())
+                            .profileUrl(member.getProfileUrl())
+                            .introduction(member.getIntroduction())
+                            .posts(postRepository.findByMemberId(id)
+                                    .stream()
+                                    .map(post -> {
+                                        PostResponse postResponse = PostResponse.builder()
+                                                .id(post.getId())
+                                                .title(post.getTitle())
+                                                .price(post.getPrice())
+                                                .transactionRegion(post.getTransactionRegion())
+                                                .purpose(post.getPurpose())
+                                                .createdDate(post.getCreatedDate())
+                                                .updatedDate(post.getUpdatedDate())
+                                                .images(imageRepository.findAllByPostId(post.getId())
+                                                        .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                                                .build();
+                                        return postResponse;
+                                    }).collect(Collectors.toList()))
                             .build();
-                    return response;
+                    return memberProfileResponse;
                 })
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public void getMemberProfile(Integer id) {
-
+                .orElseThrow();
     }
 
     public void checkPassword(String password, String username) {
