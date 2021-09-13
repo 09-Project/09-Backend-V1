@@ -25,6 +25,12 @@ public class PostController {
         postService.createPost(request, userDetails.getMember());
     }
 
+    @PostMapping("/like/{post-id}")
+    public void addLike(@PathVariable(name = "post-id") Integer id,
+                        @AuthenticationPrincipal CustomUserDetails userDetails) {
+        postService.addLike(id, userDetails.getMember());
+    }
+
     @PatchMapping(path = "/modify/{user-id}", consumes = {"multipart/form-data"})
     public void modifyPost(@PathVariable(name = "user-id") Integer id,
                            @ModelAttribute PostRequest request) {
