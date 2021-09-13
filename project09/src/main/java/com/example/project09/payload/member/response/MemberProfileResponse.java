@@ -14,5 +14,7 @@ public class MemberProfileResponse {
     private String profileUrl;
     private String introduction;
     private List<PostResponse> posts;
-    private Integer likes;
+    private Integer postsCount;
+    private Integer likePostsCount;
+    private Integer getLikesCount;
 }
