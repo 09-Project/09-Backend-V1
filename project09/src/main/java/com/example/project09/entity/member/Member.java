@@ -14,7 +14,7 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "tbl_member")
-@JsonIgnoreProperties({"username", "password", "posts"})
+@JsonIgnoreProperties({"username", "password", "role", "posts"})
 public class Member {
 
     @Id
@@ -43,9 +43,10 @@ public class Member {
         return this;
     }
 
-    public Member updateInfo(String name, String introduction) {
+    public Member updateInfo(String name, String introduction, String profileUrl) {
         this.name = name;
         this.introduction = introduction;
+        this.profileUrl = profileUrl;
         return this;
     }
 
