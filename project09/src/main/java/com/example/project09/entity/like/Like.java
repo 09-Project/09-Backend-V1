@@ -1,5 +1,6 @@
 package com.example.project09.entity.like;
 
+import com.example.project09.entity.member.Member;
 import com.example.project09.entity.post.Post;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -22,4 +23,8 @@ public class Like {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "member_id")
+    private Member member;
 }
