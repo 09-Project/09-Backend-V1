@@ -1,22 +1,30 @@
 package com.example.project09.service.member;
 
+import com.example.project09.entity.image.Image;
+import com.example.project09.entity.image.ImageRepository;
 import com.example.project09.entity.member.Member;
 import com.example.project09.entity.member.MemberRepository;
+import com.example.project09.entity.post.PostRepository;
 import com.example.project09.exception.InvalidPasswordException;
 import com.example.project09.exception.UserAlreadyExistsException;
 import com.example.project09.exception.UserNotFoundException;
 import com.example.project09.payload.member.request.InformationRequest;
 import com.example.project09.payload.member.request.PasswordRequest;
+import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
     private final MemberRepository memberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final PostRepository postRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     @Transactional
@@ -37,9 +45,35 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.findByUsername(member.getUsername())
                 .map(info -> memberRepository.save(
-                        info.updateInfo(request.getName(), request.getIntroduction())
+                        info.updateInfo(request.getName(), request.getIntroduction(),
+                                request.getProfile().getOriginalFilename())
                 ))
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostResponse> getMemberPosts(Member member) {
+        return postRepository.findByMemberId(member.getId())
+                .stream()
+                .map(post -> {
+                    PostResponse response = PostResponse.builder()
+                            .id(post.getId())
+                            .name(post.getMember().getName())
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .price(post.getPrice())
+                            .transactionRegion(post.getTransactionRegion())
+                            .openChatLink(post.getOpenChatLink())
+                            .purpose(post.getPurpose())
+                            .createdDate(post.getCreatedDate())
+                            .updatedDate(post.getUpdatedDate())
+                            .images(imageRepository.findAllByPostId(post.getId())
+                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                            .build();
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
 
     public void checkPassword(String password, String username) {
