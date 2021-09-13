@@ -6,6 +6,7 @@ import com.example.project09.entity.like.Like;
 import com.example.project09.entity.member.Member;
 import lombok.*;
 import javax.persistence.*;
+import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -20,7 +21,7 @@ public class Post extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NonNull
+    @NotBlank
     @Column(length = 40)
     private String title;
 
@@ -29,10 +30,10 @@ public class Post extends BaseTimeEntity {
 
     private Integer price;
 
-    @NonNull
+    @NotBlank
     private String transactionRegion;
 
-    @NonNull
+    @NotBlank
     private String openChatLink;
 
     @Enumerated(EnumType.STRING)

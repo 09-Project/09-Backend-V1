@@ -9,6 +9,7 @@ import com.example.project09.service.member.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
+import javax.validation.Valid;
 
 @RestController
 @RequiredArgsConstructor
@@ -17,7 +18,7 @@ public class MemberController {
     private final MemberServiceImpl memberService;
 
     @PatchMapping("/password")
-    public void updatePassword(@RequestBody UpdatePasswordRequest request,
+    public void updatePassword(@Valid @RequestBody UpdatePasswordRequest request,
                                @AuthenticationPrincipal CustomUserDetails userDetails) {
         memberService.updatePassword(request, userDetails.getMember());
     }
