@@ -13,5 +13,5 @@ public class PostRequest {
     private Integer price;
     private String transactionRegion;
     private String openChatLink;
-    private List<MultipartFile> multipartFiles;
+    private List<MultipartFile> images;
 }
