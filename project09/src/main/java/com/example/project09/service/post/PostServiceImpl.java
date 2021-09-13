@@ -80,10 +80,8 @@ public class PostServiceImpl implements PostService {
                     PostResponse response = PostResponse.builder()
                             .id(post.getId())
                             .title(post.getTitle())
-                            .content(post.getContent())
                             .price(post.getPrice())
                             .transactionRegion(post.getTransactionRegion())
-                            .openChatLink(post.getOpenChatLink())
                             .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
@@ -98,24 +96,24 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public EachPostResponse getEachPost(Integer id) {
-        Post postDetails = postRepository.findById(id)
+        return postRepository.findById(id)
                 .map(post -> {
-                    post.getMember().getName();
-                    post.getTitle();
-                    post.getContent();
-                    post.getPrice();
-                    post.getTransactionRegion();
-                    post.getOpenChatLink();
-                    post.getPurpose();
-                    post.getCreatedDate();
-                    post.getUpdatedDate();
-                    post.getImages();
-                    post.getMember();
-                    return post;
+                    EachPostResponse response = EachPostResponse.builder()
+                            .title(post.getTitle())
+                            .content(post.getContent())
+                            .price(post.getPrice())
+                            .transactionRegion(post.getTransactionRegion())
+                            .openChatLink(post.getOpenChatLink())
+                            .purpose(post.getPurpose())
+                            .createdDate(post.getCreatedDate())
+                            .updatedDate(post.getUpdatedDate())
+                            .images(imageRepository.findAllByPostId(post.getId())
+                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                            .member(post.getMember())
+                            .build();
+                    return response;
                 })
                 .orElseThrow(PostNotFoundException::new);
-
-        return new EachPostResponse(postDetails);
     }
 
 
