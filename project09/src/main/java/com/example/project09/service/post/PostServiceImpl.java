@@ -119,6 +119,7 @@ public class PostServiceImpl implements PostService {
                             .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
                                     .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
                             .member(post.getMember())
+                            .likes(likeRepository.countByPostId(id))
                             .build();
                     return response;
                 })
@@ -128,7 +129,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void addLike(Integer id, Member member) {
-        if(!likeRepository.existsByMemberIdAndPostId(member.getId(), id))
+        if(likeRepository.existsByMemberIdAndPostId(member.getId(), id))
             throw new LikeAlreadyExistsException();
 
         likeRepository.save(
