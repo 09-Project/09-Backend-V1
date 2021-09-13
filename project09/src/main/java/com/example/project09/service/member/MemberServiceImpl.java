@@ -58,7 +58,7 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberProfileResponse getMemberProfile(Integer id) {
+    public MemberProfileResponse getMemberProfile(Integer id) { // 상품 수, 좋아요 수 표시
         return memberRepository.findById(id)
                 .map(member -> {
                     MemberProfileResponse memberProfileResponse = MemberProfileResponse.builder()
@@ -75,7 +75,7 @@ public class MemberServiceImpl implements MemberService {
                                                 .purpose(post.getPurpose())
                                                 .createdDate(post.getCreatedDate())
                                                 .updatedDate(post.getUpdatedDate())
-                                                .images(imageRepository.findAllByPostId(post.getId())
+                                                .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
                                                         .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
                                                 .build();
                                         return postResponse;
@@ -88,10 +88,10 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberMyPageResponse getMyPage(Member member) {
+    public MemberMyPageResponse getMyPage(Member member) { // 상품 수, 좋아요 수, 찜한 상품 수 표시
         MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
 
-        List<Set<Image>> images = likeRepository.findByMemberId(member.getId())
+        List<Set<Image>> images = likeRepository.findByMemberId(member.getId()) // 제목 표시
                 .stream()
                 .map(like -> like.getPost().getImages())
                 .collect(Collectors.toList());
