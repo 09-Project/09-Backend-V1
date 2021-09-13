@@ -12,6 +12,7 @@ import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -20,7 +21,7 @@ import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
-public class PostServiceImpl implements PostService { // 검색 기능 추가
+public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
@@ -75,7 +76,7 @@ public class PostServiceImpl implements PostService { // 검색 기능 추가
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts() {
+    public List<PostResponse> getAllPosts(Pageable pageable) {
         return postRepository.findAll()
                 .stream()
                 .map(post -> {
@@ -127,6 +128,28 @@ public class PostServiceImpl implements PostService { // 검색 기능 추가
     @Transactional
     public void removeLike(Member member) {
 
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostResponse> searchPosts(String keyword, Pageable pageable) {
+        return postRepository.findByTitleContaining(keyword, pageable)
+                .stream()
+                .map(post -> {
+                    PostResponse response = PostResponse.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .price(post.getPrice())
+                            .transactionRegion(post.getTransactionRegion())
+                            .purpose(post.getPurpose())
+                            .createdDate(post.getCreatedDate())
+                            .updatedDate(post.getUpdatedDate())
+                            .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
+                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                            .build();
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
 
 
