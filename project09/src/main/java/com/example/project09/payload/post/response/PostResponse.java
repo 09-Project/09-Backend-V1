@@ -21,5 +21,4 @@ public class PostResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private List<String> images;
-    private Integer likes;
 }

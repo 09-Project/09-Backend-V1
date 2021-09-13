@@ -2,6 +2,7 @@ package com.example.project09.service.member;
 
 import com.example.project09.entity.image.Image;
 import com.example.project09.entity.image.ImageRepository;
+import com.example.project09.entity.like.LikeRepository;
 import com.example.project09.entity.member.Member;
 import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.post.PostRepository;
@@ -10,12 +11,15 @@ import com.example.project09.exception.UserAlreadyExistsException;
 import com.example.project09.exception.UserNotFoundException;
 import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
+import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.List;
+import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -25,6 +29,7 @@ public class MemberServiceImpl implements MemberService {
     private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
+    private final LikeRepository likeRepository;
 
     @Override
     @Transactional
@@ -61,8 +66,7 @@ public class MemberServiceImpl implements MemberService {
                             .profileUrl(member.getProfileUrl())
                             .introduction(member.getIntroduction())
                             .posts(postRepository.findByMemberId(id)
-                                    .stream()
-                                    .map(post -> {
+                                    .stream().map(post -> {
                                         PostResponse postResponse = PostResponse.builder()
                                                 .id(post.getId())
                                                 .title(post.getTitle())
@@ -80,6 +84,19 @@ public class MemberServiceImpl implements MemberService {
                     return memberProfileResponse;
                 })
                 .orElseThrow();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberMyPageResponse getMyPage(Member member) {
+        MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
+
+        List<Set<Image>> images = likeRepository.findByMemberId(member.getId())
+                .stream()
+                .map(like -> like.getPost().getImages())
+                .collect(Collectors.toList());
+
+        return new MemberMyPageResponse(memberProfileResponse, images);
     }
 
     public void checkPassword(String password, String username) {
