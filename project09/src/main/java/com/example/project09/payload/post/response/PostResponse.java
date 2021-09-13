@@ -14,14 +14,12 @@ import java.util.List;
 @AllArgsConstructor
 public class PostResponse {
     private Integer id;
-    private String name;
     private String title;
-    private String content;
     private Integer price;
     private String transactionRegion;
-    private String openChatLink;
     private Purpose purpose;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private List<String> images;
+    private Integer likes;
 }
