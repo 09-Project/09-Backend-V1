@@ -13,7 +13,9 @@ public enum ErrorCode {
     USER_ALREADY_EXISTS(409, "User Already Exists"),
     USER_NOT_FOUND(404, "User Not Found"),
 
-    POST_NOT_FOUND(404, "Post Not Found");
+    POST_NOT_FOUND(404, "Post Not Found"),
+
+    LIKE_NOT_FOUND(404, "Like Not Found");
 
     private final int status;
     private final String message;
