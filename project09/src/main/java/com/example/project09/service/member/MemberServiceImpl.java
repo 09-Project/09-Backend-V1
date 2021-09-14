@@ -18,6 +18,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.io.File;
+import java.io.IOException;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -42,16 +45,20 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateInfo(UpdateInformationRequest request, Member member) {
+    public void updateInfo(UpdateInformationRequest request, Member member) throws IOException {
         if(memberRepository.existsByName(request.getName()))
             throw new UserAlreadyExistsException();
 
+        UUID uuid = UUID.randomUUID();
         memberRepository.findByUsername(member.getUsername())
                 .map(info -> memberRepository.save(
                         info.updateInfo(request.getName(), request.getIntroduction(),
-                                request.getProfile().getOriginalFilename())
+                                uuid + "_" + request.getProfile().getOriginalFilename())
                 ))
                 .orElseThrow(UserNotFoundException::new);
+        request.getProfile().transferTo(
+                new File("C:\\Users\\user\\Desktop\\" + uuid + "_" + request.getProfile().getOriginalFilename())
+        );
     }
 
     @Override
@@ -76,7 +83,7 @@ public class MemberServiceImpl implements MemberService {
                                                 .createdDate(post.getCreatedDate())
                                                 .updatedDate(post.getUpdatedDate())
                                                 .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                                        .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                                                        .stream().map(Image::getImages).collect(Collectors.toList()))
                                                 .build();
                                         return postResponse;
                                     }).collect(Collectors.toList()))
