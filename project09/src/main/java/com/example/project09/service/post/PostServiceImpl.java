@@ -157,7 +157,6 @@ public class PostServiceImpl implements PostService {
         postRepository.findById(id)
                 .map(post -> post.getMember().removeLikeCounts())
                 .orElseThrow(PostNotFoundException::new);
-
     }
 
     @Override
