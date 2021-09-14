@@ -14,6 +14,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -25,7 +26,7 @@ public class PostController {
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public void createPost(@Valid @ModelAttribute PostRequest request,
-                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+                           @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
         postService.createPost(request, userDetails.getMember());
     }
 
@@ -33,6 +34,11 @@ public class PostController {
     public void addLike(@PathVariable(name = "post-id") Integer id,
                         @AuthenticationPrincipal CustomUserDetails userDetails) {
         postService.addLike(id, userDetails.getMember());
+    }
+
+    @GetMapping("/download")
+    public void download() {
+
     }
 
     @DeleteMapping("/like/{post-id}")
@@ -43,7 +49,7 @@ public class PostController {
 
     @PatchMapping(path = "/modify/{user-id}", consumes = {"multipart/form-data"})
     public void modifyPost(@PathVariable(name = "user-id") Integer id,
-                           @ModelAttribute PostRequest request) {
+                           @ModelAttribute PostRequest request) throws IOException {
         postService.modifyPost(request, id);
     }
 
