@@ -38,6 +38,7 @@ public class Post extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Purpose purpose;
+    private Integer likeCounts;
 
     @ManyToOne
     @JoinColumn(name = "member_id")
