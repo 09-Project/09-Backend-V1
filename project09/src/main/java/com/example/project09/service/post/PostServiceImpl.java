@@ -9,6 +9,7 @@ import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
+import com.example.project09.exception.ImageNotFoundException;
 import com.example.project09.exception.LikeAlreadyExistsException;
 import com.example.project09.exception.LikeNotFoundException;
 import com.example.project09.exception.PostNotFoundException;
@@ -21,7 +22,10 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
+import java.io.File;
+import java.io.IOException;
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -34,7 +38,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void createPost(PostRequest request, Member member) { // 대표 이미지 설정
+    public void createPost(PostRequest request, Member member) throws IOException { // 대표 이미지 설정
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -49,35 +53,36 @@ public class PostServiceImpl implements PostService {
             postRepository.save(post.updatePurpose(Purpose.DONATION));
 
         for (MultipartFile file : request.getImages()) {
-            imageRepository.save(Image.builder()
-                    .profileUrl(file.getOriginalFilename())
+            UUID uuid = UUID.randomUUID();
+            Image image = imageRepository.save(Image.builder()
+                    .images(uuid + "_" + file.getOriginalFilename())
                     .post(post)
                     .build());
+            file.transferTo(new File("C:\\Users\\user\\Desktop\\" + image.getImages()));
         }
     }
 
     @Override
     @Transactional
-    public void modifyPost(PostRequest request, Integer id) {
-        postRepository.save(
-                postRepository.findById(id)
-                        .map(post -> post.updatePost(
-                                request.getTitle(),
-                                request.getContent(),
-                                request.getPrice(),
-                                request.getTransactionRegion(),
-                                request.getOpenChatLink()
-                        ))
-                        .orElseThrow(PostNotFoundException::new)
-        );
+    public void modifyPost(PostRequest request, Integer id) throws IOException {
+        postRepository.findById(id)
+                .map(newPost -> newPost.updatePost(
+                        request.getTitle(),
+                        request.getContent(),
+                        request.getPrice(),
+                        request.getTransactionRegion(),
+                        request.getOpenChatLink()
+                ))
+                .orElseThrow(PostNotFoundException::new);
 
         for (MultipartFile file : request.getImages()) {
-            imageRepository.save(
-                    imageRepository.findByPostId(id)
-                            .map(image -> image.updateProfileUrl(file.getOriginalFilename()))
-                            .orElseThrow(PostNotFoundException::new)
-            );
+            UUID uuid = UUID.randomUUID();
+            Image image = imageRepository.findByPostId(id)
+                    .map(newImage -> newImage.updateImages(uuid + "_" + file.getOriginalFilename()))
+                    .orElseThrow(ImageNotFoundException::new);
+            file.transferTo(new File("C:\\Users\\user\\Desktop\\" + image.getImages()));
         }
+
     }
 
     @Override
@@ -95,7 +100,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                                    .stream().map(Image::getImages).collect(Collectors.toList()))
                             .build();
                     return response;
                 })
@@ -117,7 +122,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                                    .stream().map(Image::getImages).collect(Collectors.toList()))
                             .member(post.getMember())
                             .likes(likeRepository.countByPostId(id))
                             .build();
@@ -139,7 +144,7 @@ public class PostServiceImpl implements PostService {
                         .build());
 
         postRepository.findById(id)
-                .map(post -> post.getMember().addEveryCounts())
+                .map(post -> post.getMember().addLikeCounts())
                 .orElseThrow(PostNotFoundException::new);
     }
 
@@ -149,6 +154,10 @@ public class PostServiceImpl implements PostService {
         likeRepository.delete(
                 likeRepository.findByMemberAndPostId(member, id).orElseThrow(LikeNotFoundException::new)
         );
+        postRepository.findById(id)
+                .map(post -> post.getMember().removeLikeCounts())
+                .orElseThrow(PostNotFoundException::new);
+
     }
 
     @Override
@@ -166,7 +175,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                    .stream().map(Image::getProfileUrl).collect(Collectors.toList()))
+                                    .stream().map(Image::getImages).collect(Collectors.toList()))
                             .build();
                     return response;
                 })
