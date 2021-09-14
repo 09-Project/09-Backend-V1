@@ -34,6 +34,7 @@ public class Member {
     @Enumerated(EnumType.STRING)
     private Role role;
     private String profileUrl;
+    private Integer everyLikeCounts;
 
     @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
     private List<Post> posts;
@@ -50,4 +51,8 @@ public class Member {
         return this;
     }
 
+    public Member addEveryCounts() {
+        this.everyLikeCounts++;
+        return this;
+    }
 }
