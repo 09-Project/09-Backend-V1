@@ -51,8 +51,13 @@ public class Member {
         return this;
     }
 
-    public Member addEveryCounts() {
+    public Member addLikeCounts() {
         this.everyLikeCounts++;
+        return this;
+    }
+
+    public Member removeLikeCounts() {
+        this.everyLikeCounts--;
         return this;
     }
 }
