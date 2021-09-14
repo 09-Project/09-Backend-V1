@@ -11,6 +11,7 @@ import com.example.project09.exception.UserAlreadyExistsException;
 import com.example.project09.exception.UserNotFoundException;
 import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
+import com.example.project09.payload.member.response.MemberLikePostsResponse;
 import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
 import com.example.project09.payload.post.response.PostResponse;
@@ -20,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
@@ -100,7 +102,25 @@ public class MemberServiceImpl implements MemberService {
     public MemberMyPageResponse getMyPage(Member member) { // 내가 찜한 게시글 제목과 대표 이미지, 찜한 게시글 수 표시
         MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
 
-        return new MemberMyPageResponse(memberProfileResponse);
+/*        List<Like> likePosts = likeRepository.findByMemberId(member.getId())
+                .stream()
+                .map(like -> {
+                    like.getPost().getTitle();
+                    like.getPost().getImages();
+                    return like;
+                })
+                .collect(Collectors.toList());*/
+
+        List<MemberLikePostsResponse> likePosts = likeRepository.findByMemberId(member.getId())
+                .stream()
+                .map(like -> {
+                    MemberLikePostsResponse response = MemberLikePostsResponse.builder()
+                            .build();
+                    return response;
+                })
+                .collect(Collectors.toList());
+
+        return new MemberMyPageResponse(memberProfileResponse, likePosts);
     }
 
     public void checkPassword(String password, String username) {
