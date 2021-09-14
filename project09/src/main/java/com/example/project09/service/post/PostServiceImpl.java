@@ -137,6 +137,10 @@ public class PostServiceImpl implements PostService {
                         .post(postRepository.findById(id).orElseThrow(PostNotFoundException::new))
                         .member(member)
                         .build());
+
+        postRepository.findById(id)
+                .map(post -> post.getMember().addEveryCounts())
+                .orElseThrow(PostNotFoundException::new);
     }
 
     @Override
