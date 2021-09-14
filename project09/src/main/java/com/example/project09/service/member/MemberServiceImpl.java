@@ -18,8 +18,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.util.List;
-import java.util.Set;
 import java.util.stream.Collectors;
 
 @Service
@@ -58,7 +56,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberProfileResponse getMemberProfile(Integer id) { // 받은 찜 개수 표시
+    public MemberProfileResponse getMemberProfile(Integer id) {
+        Integer everyLikeCounts = memberRepository.findById(id).orElseThrow().getEveryLikeCounts();
+
         return memberRepository.findById(id)
                 .map(member -> {
                     MemberProfileResponse memberProfileResponse = MemberProfileResponse.builder()
@@ -81,24 +81,19 @@ public class MemberServiceImpl implements MemberService {
                                         return postResponse;
                                     }).collect(Collectors.toList()))
                             .postsCount(postRepository.countByMemberId(id))
-                            .likePostsCount(likeRepository.countByMemberId(id))
+                            .getLikesCount(everyLikeCounts)
                             .build();
                     return memberProfileResponse;
                 })
-                .orElseThrow();
+                .orElseThrow(UserNotFoundException::new);
     }
 
     @Override
     @Transactional(readOnly = true)
-    public MemberMyPageResponse getMyPage(Member member) { // 내가 찜한 게시글 수정
+    public MemberMyPageResponse getMyPage(Member member) { // 내가 찜한 게시글 제목과 대표 이미지, 찜한 게시글 수 표시
         MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
 
-        List<Set<Image>> images = likeRepository.findByMemberId(member.getId()) // 제목 표시
-                .stream()
-                .map(like -> like.getPost().getImages())
-                .collect(Collectors.toList());
-
-        return new MemberMyPageResponse(memberProfileResponse, images);
+        return new MemberMyPageResponse(memberProfileResponse);
     }
 
     public void checkPassword(String password, String username) {
