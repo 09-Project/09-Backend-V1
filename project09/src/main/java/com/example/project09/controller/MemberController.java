@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -25,7 +26,7 @@ public class MemberController {
 
     @PatchMapping(path = "/information", consumes = {"multipart/form-data"})
     public void updateInfo(@ModelAttribute UpdateInformationRequest request,
-                           @AuthenticationPrincipal CustomUserDetails userDetails) {
+                           @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
         memberService.updateInfo(request, userDetails.getMember());
     }
 
