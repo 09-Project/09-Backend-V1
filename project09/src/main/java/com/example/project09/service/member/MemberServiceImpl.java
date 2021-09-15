@@ -91,7 +91,6 @@ public class MemberServiceImpl implements MemberService {
                                     }).collect(Collectors.toList()))
                             .postsCount(postRepository.countByMemberId(id))
                             .getLikesCount(everyLikeCounts)
-                            .likePostsCount(likeRepository.countByMemberId(id))
                             .build();
                     return memberProfileResponse;
                 })
@@ -111,6 +110,7 @@ public class MemberServiceImpl implements MemberService {
                             .images(like.getPost().getImages()
                                     .stream().map(image -> image.getImages())
                                     .collect(Collectors.toList()))
+                            .likePostsCount(likeRepository.countByMemberId(member.getId()))
                             .build();
                     return response;
                 })
