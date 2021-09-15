@@ -99,24 +99,25 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberMyPageResponse getMyPage(Member member) { // 찜한 게시글 수 수정
+    public MemberMyPageResponse getMyPage(Member member) {
         MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
 
-        List<MemberLikePostsResponse> likePosts = likeRepository.findByMemberId(member.getId())
+        Integer likePostsCount = likeRepository.countByMemberId(member.getId());
+        
+        List<MemberLikePostsResponse.likePosts> likePosts = likeRepository.findByMemberId(member.getId())
                 .stream()
                 .map(like -> {
-                    MemberLikePostsResponse response = MemberLikePostsResponse.builder()
+                    MemberLikePostsResponse.likePosts response = MemberLikePostsResponse.likePosts.builder()
                             .title(like.getPost().getTitle())
                             .images(like.getPost().getImages()
                                     .stream().map(image -> image.getImages())
                                     .collect(Collectors.toList()))
-                            .likePostsCount(likeRepository.countByMemberId(member.getId()))
                             .build();
                     return response;
                 })
                 .collect(Collectors.toList());
 
-        return new MemberMyPageResponse(memberProfileResponse, likePosts);
+        return new MemberMyPageResponse(memberProfileResponse, new MemberLikePostsResponse(likePostsCount, likePosts));
     }
 
     public void checkPassword(String password, String username) {
