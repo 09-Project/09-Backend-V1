@@ -65,4 +65,9 @@ public class Post extends BaseTimeEntity {
         return this;
     }
 
+    public Integer addPostLikeCounts() {
+        this.likeCounts++;
+        return likeCounts;
+    }
+
 }
