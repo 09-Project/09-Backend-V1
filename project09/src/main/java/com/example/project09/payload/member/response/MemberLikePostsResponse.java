@@ -6,10 +6,17 @@ import lombok.Getter;
 import java.util.List;
 
 @Getter
-@Builder
 @AllArgsConstructor
 public class MemberLikePostsResponse {
     private Integer likePostsCount;
-    private String title;
-    private List<String> images;
+    private List<likePosts> likePosts;
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class likePosts {
+        private String title;
+        private List<String> images;
+    }
+
 }
