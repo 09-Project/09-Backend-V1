@@ -9,6 +9,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 public class MemberLikePostsResponse {
+    private Integer likePostsCount;
     private String title;
     private List<String> images;
 }
