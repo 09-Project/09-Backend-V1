@@ -5,7 +5,6 @@ import com.example.project09.entity.image.ImageRepository;
 import com.example.project09.entity.like.Like;
 import com.example.project09.entity.like.LikeRepository;
 import com.example.project09.entity.member.Member;
-import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
@@ -21,7 +20,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.File;
 import java.io.IOException;
 import java.util.List;
@@ -32,7 +30,6 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
-    private final MemberRepository memberRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
 
@@ -47,6 +44,7 @@ public class PostServiceImpl implements PostService {
                 .openChatLink(request.getOpenChatLink())
                 .purpose(Purpose.CO_PURCHASE)
                 .member(member)
+                .likeCounts(0)
                 .build());
 
         if(post.getPrice() == null)
@@ -75,7 +73,7 @@ public class PostServiceImpl implements PostService {
                 ))
                 .orElseThrow(PostNotFoundException::new);
 
-        for (MultipartFile file : request.getImages()) {
+        for (MultipartFile file : request.getImages()) { // 중복 문제 해결
             UUID uuid = UUID.randomUUID();
             Image image = imageRepository.findByPostId(id)
                     .map(newImage -> newImage.updateImages(uuid + "_" + file.getOriginalFilename()))
@@ -124,7 +122,7 @@ public class PostServiceImpl implements PostService {
                             .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
                                     .stream().map(Image::getImages).collect(Collectors.toList()))
                             .member(post.getMember())
-                            .likes(likeRepository.countByPostId(id))
+                            .getLikes(post.getLikeCounts())
                             .build();
                     return response;
                 })
@@ -144,7 +142,11 @@ public class PostServiceImpl implements PostService {
                         .build());
 
         postRepository.findById(id)
-                .map(post -> post.getMember().addLikeCounts())
+                .map(post -> {
+                    post.getMember().addLikeCounts();
+                    post.addPostLikeCounts();
+                    return post;
+                })
                 .orElseThrow(PostNotFoundException::new);
     }
 
@@ -157,6 +159,12 @@ public class PostServiceImpl implements PostService {
         postRepository.findById(id)
                 .map(post -> post.getMember().removeLikeCounts())
                 .orElseThrow(PostNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public void removeAllLikes(Member member) {
+        likeRepository.deleteByMemberId(member.getId());
     }
 
     @Override
