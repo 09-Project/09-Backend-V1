@@ -15,5 +15,6 @@ public interface PostService {
     EachPostResponse getEachPost(Integer id);
     void addLike(Integer id, Member member);
     void removeLike(Integer id, Member member);
+    void removeAllLikes(Member member);
     List<PostResponse> searchPosts(String keyword, Pageable pageable);
 }

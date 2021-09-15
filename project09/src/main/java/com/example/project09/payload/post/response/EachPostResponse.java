@@ -23,6 +23,6 @@ public class EachPostResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private List<String> images;
-    private Integer likes;
+    private Integer getLikes;
     private Member member;
 }
