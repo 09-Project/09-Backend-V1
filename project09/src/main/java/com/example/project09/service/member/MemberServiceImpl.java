@@ -91,6 +91,7 @@ public class MemberServiceImpl implements MemberService {
                                     }).collect(Collectors.toList()))
                             .postsCount(postRepository.countByMemberId(id))
                             .getLikesCount(everyLikeCounts)
+                            .likePostsCount(likeRepository.countByMemberId(id))
                             .build();
                     return memberProfileResponse;
                 })
@@ -99,22 +100,17 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberMyPageResponse getMyPage(Member member) { // 내가 찜한 게시글 제목과 대표 이미지, 찜한 게시글 수 표시
+    public MemberMyPageResponse getMyPage(Member member) { // 찜한 게시글 수 수정
         MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
-
-/*        List<Like> likePosts = likeRepository.findByMemberId(member.getId())
-                .stream()
-                .map(like -> {
-                    like.getPost().getTitle();
-                    like.getPost().getImages();
-                    return like;
-                })
-                .collect(Collectors.toList());*/
 
         List<MemberLikePostsResponse> likePosts = likeRepository.findByMemberId(member.getId())
                 .stream()
                 .map(like -> {
                     MemberLikePostsResponse response = MemberLikePostsResponse.builder()
+                            .title(like.getPost().getTitle())
+                            .images(like.getPost().getImages()
+                                    .stream().map(image -> image.getImages())
+                                    .collect(Collectors.toList()))
                             .build();
                     return response;
                 })
