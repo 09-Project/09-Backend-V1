@@ -49,7 +49,7 @@ public class PostController {
 
     @PatchMapping(path = "/modify/{user-id}", consumes = {"multipart/form-data"})
     public void modifyPost(@PathVariable(name = "user-id") Integer id,
-                           @ModelAttribute PostRequest request) throws IOException {
+                           @Valid @ModelAttribute PostRequest request) throws IOException {
         postService.modifyPost(request, id);
     }
 
