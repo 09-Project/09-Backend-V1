@@ -127,6 +127,7 @@ public class PostServiceImpl implements PostService {
                                     .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
                             .member(post.getMember())
                             .getLikes(post.getLikeCounts())
+                            .postsCount(postRepository.countByMemberId(post.getMember().getId()))
                             .build();
                     return response;
                 })
