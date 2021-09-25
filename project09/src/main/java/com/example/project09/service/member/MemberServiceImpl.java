@@ -9,10 +9,7 @@ import com.example.project09.entity.member.Role;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.refreshtoken.RefreshToken;
 import com.example.project09.entity.refreshtoken.RefreshTokenRepository;
-import com.example.project09.exception.InvalidPasswordException;
-import com.example.project09.exception.InvalidTokenException;
-import com.example.project09.exception.UserAlreadyExistsException;
-import com.example.project09.exception.UserNotFoundException;
+import com.example.project09.exception.*;
 import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.TokenResponse;
@@ -156,8 +153,8 @@ public class MemberServiceImpl implements MemberService {
                                                 .purpose(post.getPurpose())
                                                 .createdDate(post.getCreatedDate())
                                                 .updatedDate(post.getUpdatedDate())
-                                                .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                                        .stream().map(Image::getImages).collect(Collectors.toList()))
+                                                .image(imageRepository.findByPostId(post.getId())
+                                                        .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
                                                 .build();
                                         return postResponse;
                                     }).collect(Collectors.toList()))
@@ -181,9 +178,7 @@ public class MemberServiceImpl implements MemberService {
                 .map(like -> {
                     MemberLikePostsResponse.likePosts response = MemberLikePostsResponse.likePosts.builder()
                             .title(like.getPost().getTitle())
-                            .images(like.getPost().getImages()
-                                    .stream().map(image -> image.getImages())
-                                    .collect(Collectors.toList()))
+                            .image(like.getPost().getImage().getImage())
                             .build();
                     return response;
                 })
