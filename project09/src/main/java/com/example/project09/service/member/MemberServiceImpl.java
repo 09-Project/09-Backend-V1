@@ -35,6 +35,9 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
+    @Value("${img.path}")
+    private String IMAGE_PATH;
+
     @Value("${jwt.exp.refresh}")
     private Long REFRESH_TOKEN_EXPIRATION_TIME;
 
@@ -128,7 +131,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(UserNotFoundException::new);
 
         request.getProfile().transferTo(
-                new File("C:\\Users\\user\\Desktop\\" + uuid + "_" + request.getProfile().getOriginalFilename())
+                new File(IMAGE_PATH + uuid + "_" + request.getProfile().getOriginalFilename())
         );
     }
 

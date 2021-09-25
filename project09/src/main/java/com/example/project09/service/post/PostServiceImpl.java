@@ -16,6 +16,7 @@ import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,6 +30,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
+
+    @Value("${img.path}")
+    private String IMAGE_PATH;
+
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
@@ -56,7 +61,7 @@ public class PostServiceImpl implements PostService {
                 .image(uuid + "_" + file.getOriginalFilename())
                 .post(post)
                 .build());
-        file.transferTo(new File("C:\\Users\\user\\OneDrive\\바탕화면\\" + image.getImage()));
+        file.transferTo(new File(IMAGE_PATH + image.getImage()));
 
     }
 
@@ -78,7 +83,7 @@ public class PostServiceImpl implements PostService {
         Image image = imageRepository.findByPostId(id)
                 .map(newImage -> newImage.updateImage(uuid + "_" + file.getOriginalFilename()))
                 .orElseThrow(ImageNotFoundException::new);
-        file.transferTo(new File("C:\\Users\\user\\Desktop\\" + image.getImage()));
+        file.transferTo(new File(IMAGE_PATH + image.getImage()));
 
     }
 
@@ -106,7 +111,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public EachPostResponse getEachPost(Integer id) { // 다른 상품 보기, 상품 수 추가
+    public EachPostResponse getEachPost(Integer id) { // 다른 상품 추천 추가
         return postRepository.findById(id)
                 .map(post -> {
                     EachPostResponse response = EachPostResponse.builder()
@@ -168,7 +173,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> searchPosts(String keyword, Pageable pageable) { // 키워드 오류 수정, 검색 결과 개수 추가
+    public List<PostResponse> searchPosts(String keyword, Pageable pageable) { // 키워드 오류 수정
         return postRepository.findByTitleContaining(keyword, pageable)
                 .stream()
                 .map(post -> {
