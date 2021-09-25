@@ -22,18 +22,18 @@ import java.io.IOException;
 public class MemberController {
     private final MemberServiceImpl memberService;
 
-    @PostMapping("/signup")
+    @PostMapping("/auth/signup")
     @ResponseStatus(HttpStatus.CREATED)
     public void signup(@Valid @RequestBody SignupRequest request) {
         memberService.signup(request);
     }
 
-    @PostMapping("/login")
+    @PostMapping("/auth/login")
     public TokenResponse login(@Valid @RequestBody LoginRequest request) {
         return memberService.login(request);
     }
 
-    @PutMapping("/reissue")
+    @PutMapping("/auth/reissue")
     public TokenResponse reissue(@RequestHeader(name = "x-refresh-token") String token) {
         return memberService.reissue(token);
     }
