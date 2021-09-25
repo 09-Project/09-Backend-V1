@@ -1,6 +1,5 @@
 package com.example.project09.service.member;
 
-import com.example.project09.entity.member.Member;
 import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.TokenResponse;
@@ -14,8 +13,8 @@ public interface MemberService {
     void signup(SignupRequest request);
     TokenResponse login(LoginRequest request);
     TokenResponse reissue(String token);
-    void updatePassword(UpdatePasswordRequest request, Member member);
-    void updateInfo(UpdateInformationRequest request, Member member) throws IOException;
+    void updatePassword(UpdatePasswordRequest request);
+    void updateInfo(UpdateInformationRequest request) throws IOException;
     MemberProfileResponse getMemberProfile(Integer id);
-    MemberMyPageResponse getMyPage(Member member);
+    MemberMyPageResponse getMyPage();
 }

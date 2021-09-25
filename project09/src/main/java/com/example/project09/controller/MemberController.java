@@ -7,11 +7,9 @@ import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
 import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
-import com.example.project09.security.auth.CustomUserDetails;
 import com.example.project09.service.member.MemberServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -39,15 +37,13 @@ public class MemberController {
     }
 
     @PatchMapping("/password")
-    public void updatePassword(@Valid @RequestBody UpdatePasswordRequest request,
-                               @AuthenticationPrincipal CustomUserDetails userDetails) {
-        memberService.updatePassword(request, userDetails.getMember());
+    public void updatePassword(@Valid @RequestBody UpdatePasswordRequest request) {
+        memberService.updatePassword(request);
     }
 
     @PatchMapping(path = "/information", consumes = {"multipart/form-data"})
-    public void updateInfo(@ModelAttribute UpdateInformationRequest request,
-                           @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
-        memberService.updateInfo(request, userDetails.getMember());
+    public void updateInfo(@ModelAttribute UpdateInformationRequest request) throws IOException {
+        memberService.updateInfo(request);
     }
 
     @GetMapping("/profile/{user-id}")
@@ -56,8 +52,8 @@ public class MemberController {
     }
 
     @GetMapping("/me")
-    public MemberMyPageResponse getMyPage(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        return memberService.getMyPage(userDetails.getMember());
+    public MemberMyPageResponse getMyPage() {
+        return memberService.getMyPage();
     }
 
 }

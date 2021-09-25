@@ -10,6 +10,7 @@ import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.refreshtoken.RefreshToken;
 import com.example.project09.entity.refreshtoken.RefreshTokenRepository;
 import com.example.project09.exception.*;
+import com.example.project09.facade.MemberFacade;
 import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.TokenResponse;
@@ -52,7 +53,9 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void signup(SignupRequest request) {
-        if(memberRepository.existsByNameOrUsername(request.getName(), request.getUsername()))
+        if(memberRepository.findByName(request.getName()).isPresent())
+            throw new UserAlreadyExistsException();
+        else if(memberRepository.findByUsername(request.getUsername()).isPresent())
             throw new UserAlreadyExistsException();
 
         Member member = Member.builder()
@@ -108,9 +111,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updatePassword(UpdatePasswordRequest request, Member member) {
-        checkPassword(request.getPassword(), member.getUsername());
-        memberRepository.findByUsername(member.getUsername())
+    public void updatePassword(UpdatePasswordRequest request) {
+        checkPassword(request.getPassword(), MemberFacade.getMemberId());
+        memberRepository.findById(MemberFacade.getMemberId())
                 .map(password -> memberRepository.save(
                         password.updatePassword(passwordEncoder.encode(request.getNewPassword()))
                 ))
@@ -119,12 +122,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateInfo(UpdateInformationRequest request, Member member) throws IOException {
-        if(memberRepository.existsByName(request.getName()))
+    public void updateInfo(UpdateInformationRequest request) throws IOException {
+        if(memberRepository.findByName(request.getName()).isPresent())
             throw new UserAlreadyExistsException();
 
         UUID uuid = UUID.randomUUID();
-        memberRepository.findByUsername(member.getUsername())
+        memberRepository.findById(MemberFacade.getMemberId())
                 .map(info -> info.updateInfo(request.getName(), request.getIntroduction(),
                         uuid + "_" + request.getProfile().getOriginalFilename())
                 )
@@ -171,12 +174,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberMyPageResponse getMyPage(Member member) {
-        MemberProfileResponse memberProfileResponse = getMemberProfile(member.getId());
+    public MemberMyPageResponse getMyPage() {
+        MemberProfileResponse memberProfileResponse = getMemberProfile(MemberFacade.getMemberId());
 
-        Integer likePostsCount = likeRepository.countByMemberId(member.getId());
+        Integer likePostsCount = likeRepository.countByMemberId(MemberFacade.getMemberId());
         
-        List<MemberLikePostsResponse.likePosts> likePosts = likeRepository.findByMemberId(member.getId())
+        List<MemberLikePostsResponse.likePosts> likePosts = likeRepository.findByMemberId(MemberFacade.getMemberId())
                 .stream()
                 .map(like -> {
                     MemberLikePostsResponse.likePosts response = MemberLikePostsResponse.likePosts.builder()
@@ -190,8 +193,8 @@ public class MemberServiceImpl implements MemberService {
         return new MemberMyPageResponse(memberProfileResponse, new MemberLikePostsResponse(likePostsCount, likePosts));
     }
 
-    public void checkPassword(String password, String username) {
-        Member member = memberRepository.findByUsername(username)
+    public void checkPassword(String password, Integer id) {
+        Member member = memberRepository.findById(id)
                 .orElseThrow(UserNotFoundException::new);
 
         if (!passwordEncoder.matches(password, member.getPassword()))
