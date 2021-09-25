@@ -35,7 +35,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void createPost(PostRequest request, Member member) throws IOException { // 대표 이미지 설정
+    public void createPost(PostRequest request, Member member) throws IOException {
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -50,14 +50,14 @@ public class PostServiceImpl implements PostService {
         if(post.getPrice() == null)
             postRepository.save(post.updatePurpose(Purpose.DONATION));
 
-        for (MultipartFile file : request.getImages()) {
-            UUID uuid = UUID.randomUUID();
-            Image image = imageRepository.save(Image.builder()
-                    .images(uuid + "_" + file.getOriginalFilename())
-                    .post(post)
-                    .build());
-            file.transferTo(new File("C:\\Users\\user\\Desktop\\" + image.getImages()));
-        }
+        MultipartFile file = request.getImage();
+        UUID uuid = UUID.randomUUID();
+        Image image = imageRepository.save(Image.builder()
+                .image(uuid + "_" + file.getOriginalFilename())
+                .post(post)
+                .build());
+        file.transferTo(new File("C:\\Users\\user\\OneDrive\\바탕화면\\" + image.getImage()));
+
     }
 
     @Override
@@ -73,19 +73,18 @@ public class PostServiceImpl implements PostService {
                 ))
                 .orElseThrow(PostNotFoundException::new);
 
-        for (MultipartFile file : request.getImages()) { // 중복 문제 해결
-            UUID uuid = UUID.randomUUID();
-            Image image = imageRepository.findByPostId(id)
-                    .map(newImage -> newImage.updateImages(uuid + "_" + file.getOriginalFilename()))
-                    .orElseThrow(ImageNotFoundException::new);
-            file.transferTo(new File("C:\\Users\\user\\Desktop\\" + image.getImages()));
-        }
+        MultipartFile file = request.getImage();
+        UUID uuid = UUID.randomUUID();
+        Image image = imageRepository.findByPostId(id)
+                .map(newImage -> newImage.updateImage(uuid + "_" + file.getOriginalFilename()))
+                .orElseThrow(ImageNotFoundException::new);
+        file.transferTo(new File("C:\\Users\\user\\Desktop\\" + image.getImage()));
 
     }
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts(Pageable pageable) { // 페이징 처리
+    public List<PostResponse> getAllPosts(Pageable pageable) {
         return postRepository.findAll(pageable)
                 .stream()
                 .map(post -> {
@@ -97,8 +96,8 @@ public class PostServiceImpl implements PostService {
                             .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                    .stream().map(Image::getImages).collect(Collectors.toList()))
+                            .image(imageRepository.findByPostId(post.getId())
+                                    .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
                             .build();
                     return response;
                 })
@@ -107,7 +106,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public EachPostResponse getEachPost(Integer id) { // 다른 상품 보기 추가
+    public EachPostResponse getEachPost(Integer id) { // 다른 상품 보기, 상품 수 추가
         return postRepository.findById(id)
                 .map(post -> {
                     EachPostResponse response = EachPostResponse.builder()
@@ -119,8 +118,8 @@ public class PostServiceImpl implements PostService {
                             .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                    .stream().map(Image::getImages).collect(Collectors.toList()))
+                            .image(imageRepository.findByPostId(post.getId())
+                                    .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
                             .member(post.getMember())
                             .getLikes(post.getLikeCounts())
                             .build();
@@ -169,7 +168,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> searchPosts(String keyword, Pageable pageable) { // 검색 결과 개수 추가
+    public List<PostResponse> searchPosts(String keyword, Pageable pageable) { // 키워드 오류 수정, 검색 결과 개수 추가
         return postRepository.findByTitleContaining(keyword, pageable)
                 .stream()
                 .map(post -> {
@@ -181,8 +180,8 @@ public class PostServiceImpl implements PostService {
                             .purpose(post.getPurpose())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
-                            .images(imageRepository.findAllByPostId(post.getId()) // 대표 이미지 설정
-                                    .stream().map(Image::getImages).collect(Collectors.toList()))
+                            .image(imageRepository.findByPostId(post.getId())
+                                    .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
                             .build();
                     return response;
                 })
