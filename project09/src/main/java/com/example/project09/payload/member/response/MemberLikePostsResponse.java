@@ -16,7 +16,7 @@ public class MemberLikePostsResponse {
     @AllArgsConstructor
     public static class likePosts {
         private String title;
-        private List<String> images;
+        private String image;
     }
 
 }

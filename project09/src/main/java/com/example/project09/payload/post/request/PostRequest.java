@@ -4,7 +4,6 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotBlank;
-import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -22,5 +21,5 @@ public class PostRequest {
 
     @NotBlank
     private String openChatLink;
-    private List<MultipartFile> images;
+    private MultipartFile image;
 }

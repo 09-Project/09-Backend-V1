@@ -5,13 +5,10 @@ import com.example.project09.entity.post.Purpose;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
 import java.time.LocalDateTime;
-import java.util.List;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
 public class EachPostResponse {
     private String title;
@@ -22,7 +19,7 @@ public class EachPostResponse {
     private Purpose purpose;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
-    private List<String> images;
+    private String image;
     private Integer getLikes;
     private Integer postsCount;
     private Member member;
