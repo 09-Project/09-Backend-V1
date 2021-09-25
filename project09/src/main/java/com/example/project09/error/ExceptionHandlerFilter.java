@@ -19,13 +19,11 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
         try {
             filterChain.doFilter(request, response);
         } catch (BusinessException e) {
-            ErrorCode errorCode = e.getErrorCode();
-            ErrorResponse errorResponse =
-                    new ErrorResponse(errorCode.getStatus(), errorCode.getMessage());
-            response.setStatus(errorCode.getStatus());
-            response.setStatus(errorCode.getStatus());
+            ErrorResponse errorResponse = new ErrorResponse(e.getErrorCode().getStatus(), e.getErrorCode().getMessage());
+
+            response.setStatus(e.getErrorCode().getStatus());
             response.setContentType("application/json");
-            response.getWriter().write(errorResponse.toString());
+            response.getWriter().write(errorResponse.convertToJson(errorResponse));
         }
     }
 
