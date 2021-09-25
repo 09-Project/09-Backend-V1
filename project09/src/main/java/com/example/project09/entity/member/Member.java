@@ -1,20 +1,18 @@
 package com.example.project09.entity.member;
 
-import com.example.project09.entity.post.Post;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import javax.persistence.*;
-import java.util.List;
 
 @Getter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "tbl_member")
-@JsonIgnoreProperties({"username", "password", "role", "posts"})
+@JsonIgnoreProperties({"username", "password", "role"})
 public class Member {
 
     @Id
@@ -35,9 +33,6 @@ public class Member {
     private Role role;
     private String profileUrl;
     private Integer everyLikeCounts;
-
-    @OneToMany(fetch = FetchType.LAZY, mappedBy = "member", cascade = CascadeType.REMOVE)
-    private List<Post> posts;
 
     public Member updatePassword(String password) {
         this.password = password;

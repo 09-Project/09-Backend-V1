@@ -47,7 +47,7 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Like> likes = new HashSet<>();
 
-    @OneToOne(mappedBy = "post", fetch = FetchType.LAZY)
+    @OneToOne(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Image image;
 
     public Post updatePurpose(Purpose purpose) {

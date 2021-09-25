@@ -14,7 +14,6 @@ import javax.persistence.*;
 @NoArgsConstructor
 @AllArgsConstructor
 @Entity(name = "tbl_image")
-@JsonIgnoreProperties("post")
 public class Image extends BaseTimeEntity {
 
     @Id
