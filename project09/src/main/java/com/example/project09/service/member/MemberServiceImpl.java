@@ -58,15 +58,13 @@ public class MemberServiceImpl implements MemberService {
         else if(memberRepository.findByUsername(request.getUsername()).isPresent())
             throw new UserAlreadyExistsException();
 
-        Member member = Member.builder()
+        memberRepository.save(Member.builder()
                 .name(request.getName())
                 .username(request.getUsername())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .everyLikeCounts(0)
                 .role(Role.ROLE_USER)
-                .build();
-
-        memberRepository.save(member);
+                .build());
     }
 
     @Override
@@ -113,6 +111,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void updatePassword(UpdatePasswordRequest request) {
         checkPassword(request.getPassword(), MemberFacade.getMemberId());
+
         memberRepository.findById(MemberFacade.getMemberId())
                 .map(password -> memberRepository.save(
                         password.updatePassword(passwordEncoder.encode(request.getNewPassword()))

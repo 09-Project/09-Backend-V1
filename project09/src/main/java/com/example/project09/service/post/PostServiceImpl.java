@@ -12,6 +12,7 @@ import com.example.project09.exception.ImageNotFoundException;
 import com.example.project09.exception.LikeAlreadyExistsException;
 import com.example.project09.exception.LikeNotFoundException;
 import com.example.project09.exception.PostNotFoundException;
+import com.example.project09.facade.MemberFacade;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
@@ -40,7 +41,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void createPost(PostRequest request, Member member) throws IOException {
+    public void createPost(PostRequest request) throws IOException {
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -48,7 +49,7 @@ public class PostServiceImpl implements PostService {
                 .transactionRegion(request.getTransactionRegion())
                 .openChatLink(request.getOpenChatLink())
                 .purpose(Purpose.CO_PURCHASE)
-                .member(member)
+                .member(MemberFacade.getMember())
                 .likeCounts(0)
                 .build());
 
@@ -127,7 +128,7 @@ public class PostServiceImpl implements PostService {
                                     .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
                             .member(post.getMember())
                             .getLikes(post.getLikeCounts())
-                            .postsCount(postRepository.countByMemberId(post.getMember().getId()))
+                            .postsCount(postRepository.countByMemberId(MemberFacade.getMemberId()))
                             .build();
                     return response;
                 })
@@ -136,14 +137,14 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void addLike(Integer id, Member member) {
-        if(likeRepository.existsByMemberIdAndPostId(member.getId(), id))
+    public void addLike(Integer id) {
+        if(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent())
             throw new LikeAlreadyExistsException();
 
         likeRepository.save(
                 Like.builder()
                         .post(postRepository.findById(id).orElseThrow(PostNotFoundException::new))
-                        .member(member)
+                        .member(MemberFacade.getMember())
                         .build());
 
         postRepository.findById(id)
@@ -157,9 +158,9 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void removeLike(Integer id, Member member) {
+    public void removeLike(Integer id) {
         likeRepository.delete(
-                likeRepository.findByMemberAndPostId(member, id).orElseThrow(LikeNotFoundException::new)
+                likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).orElseThrow(LikeNotFoundException::new)
         );
         postRepository.findById(id)
                 .map(post -> post.getMember().removeLikeCounts())
@@ -168,8 +169,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void removeAllLikes(Member member) {
-        likeRepository.deleteByMemberId(member.getId());
+    public void removeAllLikes() {
+        likeRepository.deleteByMemberId(MemberFacade.getMemberId());
     }
 
     @Override
@@ -193,6 +194,5 @@ public class PostServiceImpl implements PostService {
                 })
                 .collect(Collectors.toList());
     }
-
 
 }

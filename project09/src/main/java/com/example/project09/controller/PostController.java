@@ -3,15 +3,12 @@ package com.example.project09.controller;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
-import com.example.project09.security.auth.CustomUserDetails;
 import com.example.project09.service.post.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
-import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.io.IOException;
@@ -25,26 +22,23 @@ public class PostController {
 
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public void createPost(@Valid @ModelAttribute PostRequest request,
-                           @AuthenticationPrincipal CustomUserDetails userDetails) throws IOException {
-        postService.createPost(request, userDetails.getMember());
+    public void createPost(@Valid @ModelAttribute PostRequest request) throws IOException {
+        postService.createPost(request);
     }
 
     @PostMapping("/like/{post-id}")
-    public void addLike(@PathVariable(name = "post-id") Integer id,
-                        @AuthenticationPrincipal CustomUserDetails userDetails) {
-        postService.addLike(id, userDetails.getMember());
+    public void addLike(@PathVariable(name = "post-id") Integer id) {
+        postService.addLike(id);
     }
 
     @DeleteMapping("/like/{post-id}")
-    public void removeLike(@PathVariable(name = "post-id") Integer id,
-                           @AuthenticationPrincipal CustomUserDetails userDetails) {
-        postService.removeLike(id, userDetails.getMember());
+    public void removeLike(@PathVariable(name = "post-id") Integer id) {
+        postService.removeLike(id);
     }
 
     @DeleteMapping("/likes")
-    public void removeAllLikes(@AuthenticationPrincipal CustomUserDetails userDetails) {
-        postService.removeAllLikes(userDetails.getMember());
+    public void removeAllLikes() {
+        postService.removeAllLikes();
     }
 
     @PatchMapping(path = "/modify/{user-id}", consumes = {"multipart/form-data"})
