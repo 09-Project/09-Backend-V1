@@ -24,5 +24,6 @@ public class EachPostResponse {
     private LocalDateTime updatedDate;
     private List<String> images;
     private Integer getLikes;
+    private Integer postsCount;
     private Member member;
 }
