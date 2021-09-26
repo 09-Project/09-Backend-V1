@@ -6,7 +6,6 @@ import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.service.post.PostServiceImpl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
-import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -48,7 +47,7 @@ public class PostController {
     }
 
     @GetMapping("")
-    public List<PostResponse> getAllPosts(@PageableDefault(size = 16, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+    public List<PostResponse> getAllPosts(@PageableDefault(size = 16) Pageable pageable) {
         return postService.getAllPosts(pageable);
     }
 
@@ -59,7 +58,7 @@ public class PostController {
 
     @GetMapping("/search")
     public List<PostResponse> searchPosts(@RequestParam String keyword,
-                                          @PageableDefault(size = 16, sort = "id", direction = Sort.Direction.DESC) Pageable pageable) {
+                                          @PageableDefault(size = 16) Pageable pageable) {
         return postService.searchPosts(keyword, pageable);
     }
 
