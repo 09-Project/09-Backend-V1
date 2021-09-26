@@ -4,7 +4,6 @@ import com.example.project09.entity.image.Image;
 import com.example.project09.entity.image.ImageRepository;
 import com.example.project09.entity.like.Like;
 import com.example.project09.entity.like.LikeRepository;
-import com.example.project09.entity.member.Member;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
@@ -24,6 +23,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.IOException;
+import java.util.Comparator;
 import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
@@ -107,6 +107,7 @@ public class PostServiceImpl implements PostService {
                             .build();
                     return response;
                 })
+                .sorted(Comparator.comparing(PostResponse::getCreatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -192,6 +193,7 @@ public class PostServiceImpl implements PostService {
                             .build();
                     return response;
                 })
+                .sorted(Comparator.comparing(PostResponse::getCreatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
