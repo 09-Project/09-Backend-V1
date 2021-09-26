@@ -37,11 +37,13 @@ public class MemberController {
     }
 
     @PatchMapping("/password")
+    @ResponseStatus(HttpStatus.CREATED)
     public void updatePassword(@Valid @RequestBody UpdatePasswordRequest request) {
         memberService.updatePassword(request);
     }
 
     @PatchMapping(path = "/information", consumes = {"multipart/form-data"})
+    @ResponseStatus(HttpStatus.CREATED)
     public void updateInfo(@ModelAttribute UpdateInformationRequest request) throws IOException {
         memberService.updateInfo(request);
     }

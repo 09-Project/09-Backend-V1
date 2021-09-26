@@ -26,16 +26,19 @@ public class PostController {
     }
 
     @PostMapping("/like/{post-id}")
+    @ResponseStatus(HttpStatus.CREATED)
     public void addLike(@PathVariable(name = "post-id") Integer id) {
         postService.addLike(id);
     }
 
     @DeleteMapping("/like/{post-id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeLike(@PathVariable(name = "post-id") Integer id) {
         postService.removeLike(id);
     }
 
     @DeleteMapping("/likes")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void removeAllLikes() {
         postService.removeAllLikes();
     }
