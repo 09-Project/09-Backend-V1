@@ -44,7 +44,7 @@ public class MemberController {
 
     @PatchMapping(path = "/information", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateInfo(@ModelAttribute UpdateInformationRequest request) throws IOException {
+    public void updateInfo(@Valid @ModelAttribute UpdateInformationRequest request) throws IOException {
         memberService.updateInfo(request);
     }
 
