@@ -5,6 +5,6 @@ import com.example.project09.error.exception.BusinessException;
 
 public class ImageNotFoundException extends BusinessException {
     public ImageNotFoundException() {
-        super(ErrorCode.LIKE_NOT_FOUND);
+        super(ErrorCode.IMAGE_NOT_FOUND);
     }
 }
