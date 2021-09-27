@@ -15,17 +15,16 @@ import com.example.project09.facade.MemberFacade;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
+import com.example.project09.service.image.ImageService;
+import com.example.project09.service.image.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.multipart.MultipartFile;
-import java.io.File;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
@@ -38,6 +37,8 @@ public class PostServiceImpl implements PostService {
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
+    private final ImageService imageService;
+    private final S3Service s3Service;
 
     @Override
     @Transactional
@@ -50,41 +51,46 @@ public class PostServiceImpl implements PostService {
                 .openChatLink(request.getOpenChatLink())
                 .purpose(Purpose.CO_PURCHASE)
                 .member(MemberFacade.getMember())
+                .image(imageRepository.findByImage(imageService.imageUpload(request.getImage())).get())
                 .likeCounts(0)
                 .build());
 
         if(post.getPrice() == null)
             postRepository.save(post.updatePurpose(Purpose.DONATION));
 
-        MultipartFile file = request.getImage();
+/*        MultipartFile file = request.getImage();
         UUID uuid = UUID.randomUUID();
         Image image = imageRepository.save(Image.builder()
                 .image(uuid + "_" + file.getOriginalFilename())
                 .post(post)
                 .build());
-        file.transferTo(new File(IMAGE_PATH + image.getImage()));
+        file.transferTo(new File(IMAGE_PATH + image.getImage()));*/
 
     }
 
     @Override
     @Transactional
     public void modifyPost(PostRequest request, Integer id) throws IOException {
+        Image image = imageRepository.findByImage(s3Service.upload(request.getImage(), "static"))
+                .orElseThrow(ImageNotFoundException::new);
+
         postRepository.findById(id)
                 .map(newPost -> newPost.updatePost(
                         request.getTitle(),
                         request.getContent(),
                         request.getPrice(),
                         request.getTransactionRegion(),
-                        request.getOpenChatLink()
+                        request.getOpenChatLink(),
+                        image
                 ))
                 .orElseThrow(PostNotFoundException::new);
 
-        MultipartFile file = request.getImage();
+/*        MultipartFile file = request.getImage();
         UUID uuid = UUID.randomUUID();
         Image image = imageRepository.findByPostId(id)
                 .map(newImage -> newImage.updateImage(uuid + "_" + file.getOriginalFilename()))
                 .orElseThrow(ImageNotFoundException::new);
-        file.transferTo(new File(IMAGE_PATH + image.getImage()));
+        file.transferTo(new File(IMAGE_PATH + image.getImage()));*/
 
     }
 
@@ -135,6 +141,11 @@ public class PostServiceImpl implements PostService {
                 })
                 .orElseThrow(PostNotFoundException::new);
     }
+
+/*    @Override
+    public List<OtherPostResponse> getOtherPosts() {
+
+    }*/
 
     @Override
     @Transactional

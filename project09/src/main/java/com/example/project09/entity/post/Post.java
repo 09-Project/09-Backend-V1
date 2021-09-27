@@ -56,12 +56,13 @@ public class Post extends BaseTimeEntity {
     }
 
     public Post updatePost(String title, String content, Integer price,
-                           String transactionRegion, String openChatLink) {
+                           String transactionRegion, String openChatLink, Image image) {
         this.title = title;
         this.content = content;
         this.price = price;
         this.transactionRegion = transactionRegion;
         this.openChatLink = openChatLink;
+        this.image = image;
         return this;
     }
 
