@@ -19,15 +19,10 @@ public class Image extends BaseTimeEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    private String image;
+    private String imagePath;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
     private Post post;
-
-    public Image updateImage(String image) {
-        this.image = image;
-        return this;
-    }
 
 }
