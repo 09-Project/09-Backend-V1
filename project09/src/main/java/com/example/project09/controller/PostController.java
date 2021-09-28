@@ -3,7 +3,7 @@ package com.example.project09.controller;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
-import com.example.project09.service.post.PostServiceImpl;
+import com.example.project09.service.post.PostService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -17,7 +17,7 @@ import java.util.List;
 @RequiredArgsConstructor
 @RequestMapping("/post")
 public class PostController {
-    private final PostServiceImpl postService;
+    private final PostService postService;
 
     @PostMapping(path = "/create", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)

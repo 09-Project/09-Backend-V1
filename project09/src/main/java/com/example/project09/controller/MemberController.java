@@ -7,7 +7,7 @@ import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
 import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
-import com.example.project09.service.member.MemberServiceImpl;
+import com.example.project09.service.member.MemberService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -18,7 +18,7 @@ import java.io.IOException;
 @RequiredArgsConstructor
 @RequestMapping("/member")
 public class MemberController {
-    private final MemberServiceImpl memberService;
+    private final MemberService memberService;
 
     @PostMapping("/auth/signup")
     @ResponseStatus(HttpStatus.CREATED)
