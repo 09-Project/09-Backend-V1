@@ -14,7 +14,9 @@ public enum ErrorCode {
     USER_NOT_FOUND(404, "User Not Found"),
 
     POST_NOT_FOUND(404, "Post Not Found"),
+
     IMAGE_NOT_FOUND(404, "Image Not Found"),
+    FAILED_CONVERT_FILE(400,"Failed Convert File"),
 
     LIKE_NOT_FOUND(404, "Like Not Found"),
     LIKE_ALREADY_EXISTS(409, "Like Already Exists");
