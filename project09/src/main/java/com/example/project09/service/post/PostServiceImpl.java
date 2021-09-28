@@ -16,7 +16,6 @@ import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.service.image.ImageService;
-import com.example.project09.service.image.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
@@ -38,11 +37,10 @@ public class PostServiceImpl implements PostService {
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
     private final ImageService imageService;
-    private final S3Service s3Service;
 
     @Override
     @Transactional
-    public void createPost(PostRequest request) throws IOException {
+    public void createPost(PostRequest request) throws IOException { // 이미지 코드 수정
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -51,13 +49,10 @@ public class PostServiceImpl implements PostService {
                 .openChatLink(request.getOpenChatLink())
                 .purpose(Purpose.CO_PURCHASE)
                 .member(MemberFacade.getMember())
-                .image(imageRepository.findByImage(imageService.imageUpload(request.getImage())).get())
+                .image(imageRepository.findByImagePath(imageService.imageUpload(request.getImage())).get())
                 .likeCounts(0)
                 .build());
-
-        if(post.getPrice() == null)
-            postRepository.save(post.updatePurpose(Purpose.DONATION));
-
+        setPurpose(post);
 /*        MultipartFile file = request.getImage();
         UUID uuid = UUID.randomUUID();
         Image image = imageRepository.save(Image.builder()
@@ -68,11 +63,15 @@ public class PostServiceImpl implements PostService {
 
     }
 
+    @Transactional
+    public void setPurpose(Post post) {
+        if(post.getPrice() == null)
+            post.updatePurpose(Purpose.DONATION);
+    }
+
     @Override
     @Transactional
-    public void modifyPost(PostRequest request, Integer id) throws IOException {
-        Image image = imageRepository.findByImage(s3Service.upload(request.getImage(), "static"))
-                .orElseThrow(ImageNotFoundException::new);
+    public void modifyPost(PostRequest request, Integer id) throws IOException { // 이미지 코드 추가
 
         postRepository.findById(id)
                 .map(newPost -> newPost.updatePost(
@@ -80,8 +79,7 @@ public class PostServiceImpl implements PostService {
                         request.getContent(),
                         request.getPrice(),
                         request.getTransactionRegion(),
-                        request.getOpenChatLink(),
-                        image
+                        request.getOpenChatLink()
                 ))
                 .orElseThrow(PostNotFoundException::new);
 
@@ -109,7 +107,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
+                                    .map(Image::getImagePath).orElseThrow(ImageNotFoundException::new))
                             .build();
                     return response;
                 })
@@ -132,7 +130,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
+                                    .map(Image::getImagePath).orElseThrow(ImageNotFoundException::new))
                             .member(post.getMember())
                             .getLikes(post.getLikeCounts())
                             .postsCount(postRepository.countByMemberId(MemberFacade.getMemberId()))
@@ -200,7 +198,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImage).orElseThrow(ImageNotFoundException::new))
+                                    .map(Image::getImagePath).orElseThrow(ImageNotFoundException::new))
                             .build();
                     return response;
                 })

@@ -21,7 +21,7 @@ public class ImageServiceImpl implements ImageService {
         String imagePath = s3Service.upload(image, "static");
 
         imageRepository.save(Image.builder()
-                .image(imagePath)
+                .imagePath(imagePath)
                 .build());
         return imagePath;
     }
