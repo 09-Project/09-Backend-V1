@@ -49,6 +49,11 @@ public class PostController {
         postService.modifyPost(request, id);
     }
 
+    @DeleteMapping("/{post-id}")
+    public void removePost(@PathVariable(name = "post-id") Integer id) {
+        postService.removePost(id);
+    }
+
     @GetMapping("")
     public List<PostResponse> getAllPosts(@PageableDefault(size = 16) Pageable pageable) {
         return postService.getAllPosts(pageable);

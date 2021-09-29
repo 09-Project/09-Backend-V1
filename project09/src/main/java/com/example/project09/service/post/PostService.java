@@ -11,6 +11,7 @@ import java.util.List;
 public interface PostService {
     void createPost(PostRequest request) throws IOException;
     void modifyPost(PostRequest request, Integer id) throws IOException;
+    void removePost(Integer id);
     List<PostResponse> getAllPosts(Pageable pageable);
     EachPostResponse getEachPost(Integer id);
 //    List<OtherPostResponse> getOtherPosts();
