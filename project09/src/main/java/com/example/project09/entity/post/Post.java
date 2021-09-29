@@ -47,7 +47,8 @@ public class Post extends BaseTimeEntity {
     @OneToMany(mappedBy = "post", cascade = CascadeType.REMOVE)
     private Set<Like> likes = new HashSet<>();
 
-    @OneToOne(mappedBy = "post", cascade = CascadeType.REMOVE)
+    @OneToOne(mappedBy = "post",
+            cascade = CascadeType.REMOVE)
     private Image image;
 
     public Post updatePurpose(Purpose purpose) {
@@ -62,6 +63,11 @@ public class Post extends BaseTimeEntity {
         this.price = price;
         this.transactionRegion = transactionRegion;
         this.openChatLink = openChatLink;
+        return this;
+    }
+
+    public Post updateImage(Image image) {
+        this.image = image;
         return this;
     }
 
