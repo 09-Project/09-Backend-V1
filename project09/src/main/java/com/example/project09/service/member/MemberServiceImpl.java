@@ -159,7 +159,7 @@ public class MemberServiceImpl implements MemberService {
                                                 .createdDate(post.getCreatedDate())
                                                 .updatedDate(post.getUpdatedDate())
                                                 .image(imageRepository.findByPostId(post.getId())
-                                                        .map(Image::getImagePath).orElseThrow(ImageNotFoundException::new))
+                                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
                                                 .build();
                                         return postResponse;
                                     }).collect(Collectors.toList()))
@@ -183,7 +183,7 @@ public class MemberServiceImpl implements MemberService {
                 .map(like -> {
                     MemberLikePostsResponse.likePosts response = MemberLikePostsResponse.likePosts.builder()
                             .title(like.getPost().getTitle())
-                            .image(like.getPost().getImage().getImagePath())
+                            .image(like.getPost().getImage().getImageUrl())
                             .build();
                     return response;
                 })
