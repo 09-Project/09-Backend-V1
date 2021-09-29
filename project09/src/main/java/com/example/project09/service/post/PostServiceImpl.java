@@ -40,7 +40,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void createPost(PostRequest request) throws IOException { // 이미지 코드 수정
+    public void createPost(PostRequest request) throws IOException {
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -49,18 +49,12 @@ public class PostServiceImpl implements PostService {
                 .openChatLink(request.getOpenChatLink())
                 .purpose(Purpose.CO_PURCHASE)
                 .member(MemberFacade.getMember())
-                .image(imageRepository.findByImagePath(imageService.imageUpload(request.getImage())).get())
                 .likeCounts(0)
                 .build());
-        setPurpose(post);
-/*        MultipartFile file = request.getImage();
-        UUID uuid = UUID.randomUUID();
-        Image image = imageRepository.save(Image.builder()
-                .image(uuid + "_" + file.getOriginalFilename())
-                .post(post)
-                .build());
-        file.transferTo(new File(IMAGE_PATH + image.getImage()));*/
 
+        post.updateImage(imageRepository.findByImagePath(imageService.uploadFile(request.getImage(), post)).get());
+
+        setPurpose(post);
     }
 
     @Transactional
@@ -90,6 +84,13 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(ImageNotFoundException::new);
         file.transferTo(new File(IMAGE_PATH + image.getImage()));*/
 
+    }
+
+    @Override
+    @Transactional
+    public void removePost(Integer id) {
+        imageService.removeFile(id);
+        postRepository.deleteById(id);
     }
 
     @Override
