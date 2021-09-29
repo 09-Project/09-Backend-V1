@@ -2,7 +2,6 @@ package com.example.project09.entity.image;
 
 import com.example.project09.entity.BaseTimeEntity;
 import com.example.project09.entity.post.Post;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -20,6 +19,7 @@ public class Image extends BaseTimeEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
     private String imagePath;
+    private String imageUrl;
 
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "post_id")
