@@ -65,7 +65,7 @@ public class PostController {
         return postService.getEachPost(id);
     }
 
-    @GetMapping("")
+    @GetMapping("/other")
     public List<OtherPostResponse> getOtherPosts() {
         return postService.getOtherPosts();
     }
