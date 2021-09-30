@@ -31,6 +31,20 @@ public class ImageServiceImpl implements ImageService {
     }
 
     @Override
+    @Transactional
+    public String updateFile(MultipartFile image, Post post) throws IOException {
+        String imagePath = s3Service.upload(image, "static");
+        Integer postId = post.getId();
+
+        removeFile(postId);
+        imageRepository.findByPostId(postId)
+                .map(newImage -> newImage.updateImage(imagePath, s3Service.getFileUrl(imagePath)))
+                .orElseThrow(ImageNotFoundException::new);
+
+        return imagePath;
+    }
+
+    @Override
     public void removeFile(Integer postId) {
         s3Service.removeFile(imageRepository.findByPostId(postId)
                 .map(image -> image.getImagePath())
