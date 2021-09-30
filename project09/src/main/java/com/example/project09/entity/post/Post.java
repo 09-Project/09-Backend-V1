@@ -40,7 +40,7 @@ public class Post extends BaseTimeEntity {
     private Purpose purpose;
     private Integer likeCounts;
 
-    @ManyToOne
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "member_id")
     private Member member;
 
@@ -48,6 +48,7 @@ public class Post extends BaseTimeEntity {
     private Set<Like> likes = new HashSet<>();
 
     @OneToOne(mappedBy = "post",
+            fetch = FetchType.LAZY,
             cascade = CascadeType.REMOVE)
     private Image image;
 
