@@ -105,7 +105,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public EachPostResponse getEachPost(Integer id) { // 다른 상품 추천 추가
+    public EachPostResponse getEachPost(Integer id) {
         return postRepository.findById(id)
                 .map(post -> {
                     EachPostResponse response = EachPostResponse.builder()
@@ -186,7 +186,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> searchPosts(String keyword, Pageable pageable) { // 키워드 오류 수정
+    public List<PostResponse> searchPosts(String keyword, Pageable pageable) {
         return postRepository.findByTitleContaining(keyword, pageable)
                 .stream()
                 .map(post -> {

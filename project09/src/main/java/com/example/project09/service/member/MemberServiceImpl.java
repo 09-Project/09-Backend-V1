@@ -67,7 +67,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public TokenResponse login(LoginRequest request) {
         Member member = memberRepository.findByUsername(request.getUsername())
-                .orElseThrow(() -> new UserNotFoundException());
+                .orElseThrow(UserNotFoundException::new);
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword()))
             throw new InvalidPasswordException();
@@ -88,7 +88,6 @@ public class MemberServiceImpl implements MemberService {
         return new TokenResponse(tokenProvider.createAccessToken(refreshToken.getUsername()), token);
     }
 
-    @Transactional
     public TokenResponse createToken(String username) {
         String accessToken = tokenProvider.createAccessToken(username);
         String refreshToken = tokenProvider.createRefreshToken(username);
