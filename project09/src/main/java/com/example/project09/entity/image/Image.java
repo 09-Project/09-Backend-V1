@@ -25,4 +25,10 @@ public class Image extends BaseTimeEntity {
     @JoinColumn(name = "post_id")
     private Post post;
 
+    public Image updateImage(String imagePath, String imageUrl) {
+        this.imagePath = imagePath;
+        this.imageUrl = imageUrl;
+        return this;
+    }
+
 }
