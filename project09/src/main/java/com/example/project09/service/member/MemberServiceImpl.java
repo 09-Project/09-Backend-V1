@@ -126,13 +126,20 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public void updateInfo(UpdateInformationRequest request) throws IOException {
+    public void updateInfo(UpdateInformationRequest request) {
         if(memberRepository.findByName(request.getName()).isPresent())
             throw new UserAlreadyExistsException();
 
         memberRepository.findById(MemberFacade.getMemberId())
-                .map(info -> info.updateInfo(request.getName(), request.getIntroduction(),
-                        s3Service.getFileUrl(s3Service.upload(request.getProfile(), "static")))
+                .map(info -> {
+                            try {
+                                return info.updateInfo(request.getName(), request.getIntroduction(),
+                                        s3Service.getFileUrl(s3Service.upload(request.getProfile(), "static")));
+                            } catch (IOException exception) {
+                                exception.printStackTrace();
+                                throw new ImageNotFoundException();
+                            }
+                        }
                 )
                 .orElseThrow(UserNotFoundException::new);
     }
