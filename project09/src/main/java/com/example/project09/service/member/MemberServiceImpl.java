@@ -21,27 +21,24 @@ import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.security.jwt.JwtTokenProvider;
+import com.example.project09.service.image.S3Service;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.io.File;
 import java.io.IOException;
 import java.util.List;
-import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
 public class MemberServiceImpl implements MemberService {
 
-    @Value("${img.path}")
-    private String IMAGE_PATH;
-
     @Value("${jwt.exp.refresh}")
     private Long REFRESH_TOKEN_EXPIRATION_TIME;
 
+    private final S3Service s3Service;
     private final PostRepository postRepository;
     private final LikeRepository likeRepository;
     private final JwtTokenProvider tokenProvider;
@@ -133,16 +130,11 @@ public class MemberServiceImpl implements MemberService {
         if(memberRepository.findByName(request.getName()).isPresent())
             throw new UserAlreadyExistsException();
 
-        UUID uuid = UUID.randomUUID();
         memberRepository.findById(MemberFacade.getMemberId())
                 .map(info -> info.updateInfo(request.getName(), request.getIntroduction(),
-                        uuid + "_" + request.getProfile().getOriginalFilename())
+                        s3Service.getFileUrl(s3Service.upload(request.getProfile(), "static")))
                 )
                 .orElseThrow(UserNotFoundException::new);
-
-        request.getProfile().transferTo(
-                new File(IMAGE_PATH + uuid + "_" + request.getProfile().getOriginalFilename())
-        );
     }
 
     @Override
