@@ -8,7 +8,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
-import java.io.IOException;
 
 @Service
 @RequiredArgsConstructor
@@ -19,7 +18,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public String uploadFile(MultipartFile image, Post post) throws IOException {
+    public String uploadFile(MultipartFile image, Post post) {
         String imagePath = s3Service.upload(image, "static");
 
         imageRepository.save(Image.builder()
@@ -32,7 +31,7 @@ public class ImageServiceImpl implements ImageService {
 
     @Override
     @Transactional
-    public String updateFile(MultipartFile image, Post post) throws IOException {
+    public String updateFile(MultipartFile image, Post post) {
         String imagePath = s3Service.upload(image, "static");
         Integer postId = post.getId();
 

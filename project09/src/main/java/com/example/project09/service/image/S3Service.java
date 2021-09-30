@@ -4,6 +4,7 @@ import com.amazonaws.services.s3.AmazonS3Client;
 import com.amazonaws.services.s3.model.CannedAccessControlList;
 import com.amazonaws.services.s3.model.DeleteObjectRequest;
 import com.amazonaws.services.s3.model.PutObjectRequest;
+import com.example.project09.exception.S3ConnectionFailedException;
 import com.example.project09.security.config.S3Config;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -19,11 +20,16 @@ public class S3Service {
     private final S3Config s3Config;
     private final AmazonS3Client amazonS3Client;
 
-    public String upload(MultipartFile image, String dirName) throws IOException {
-        String fileName = dirName + "/" + UUID.randomUUID() + image.getName();
+    public String upload(MultipartFile image, String dirName) {
+        String fileName = dirName + "/" + UUID.randomUUID() + image.getOriginalFilename();
 
-        amazonS3Client.putObject(new PutObjectRequest(s3Config.getBucket(), fileName, image.getInputStream(), null)
-                .withCannedAcl(CannedAccessControlList.PublicRead));
+        try {
+            amazonS3Client.putObject(new PutObjectRequest(s3Config.getBucket(), fileName, image.getInputStream(), null)
+                    .withCannedAcl(CannedAccessControlList.PublicRead));
+        } catch (IOException e) {
+            throw new S3ConnectionFailedException();
+        }
+
         return fileName;
     }
 
