@@ -14,7 +14,7 @@ public interface PostService {
     void removePost(Integer id);
     List<PostResponse> getAllPosts(Pageable pageable);
     EachPostResponse getEachPost(Integer id);
-//    List<OtherPostResponse> getOtherPosts();
+    List<OtherPostResponse> getOtherPosts();
     void addLike(Integer id);
     void removeLike(Integer id);
     void removeAllLikes();

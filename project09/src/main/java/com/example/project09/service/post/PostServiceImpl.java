@@ -14,6 +14,7 @@ import com.example.project09.exception.PostNotFoundException;
 import com.example.project09.facade.MemberFacade;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
+import com.example.project09.payload.post.response.OtherPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
@@ -59,7 +60,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void modifyPost(PostRequest request, Integer id) throws IOException { // 이미지 코드 추가
+    public void modifyPost(PostRequest request, Integer id) throws IOException {
         Post post = postRepository.findById(id)
                 .map(newPost -> newPost.updatePost(
                         request.getTitle(),
@@ -129,10 +130,10 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(PostNotFoundException::new);
     }
 
-/*    @Override
+    @Override
     public List<OtherPostResponse> getOtherPosts() {
-
-    }*/
+        
+    }
 
     @Override
     @Transactional
