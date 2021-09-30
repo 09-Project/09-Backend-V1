@@ -28,10 +28,10 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-    private final PostRepository postRepository;
-    private final ImageRepository imageRepository;
-    private final LikeRepository likeRepository;
     private final ImageService imageService;
+    private final PostRepository postRepository;
+    private final LikeRepository likeRepository;
+    private final ImageRepository imageRepository;
 
     @Override
     @Transactional

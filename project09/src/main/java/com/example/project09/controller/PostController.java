@@ -14,8 +14,8 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@RequiredArgsConstructor
 @RequestMapping("/post")
+@RequiredArgsConstructor
 public class PostController {
     private final PostService postService;
 

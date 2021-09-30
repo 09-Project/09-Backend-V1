@@ -42,12 +42,12 @@ public class MemberServiceImpl implements MemberService {
     @Value("${jwt.exp.refresh}")
     private Long REFRESH_TOKEN_EXPIRATION_TIME;
 
-    private final MemberRepository memberRepository;
-    private final PasswordEncoder passwordEncoder;
     private final PostRepository postRepository;
-    private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
     private final JwtTokenProvider tokenProvider;
+    private final PasswordEncoder passwordEncoder;
+    private final ImageRepository imageRepository;
+    private final MemberRepository memberRepository;
     private final RefreshTokenRepository refreshTokenRepository;
 
     @Override
@@ -117,6 +117,14 @@ public class MemberServiceImpl implements MemberService {
                         password.updatePassword(passwordEncoder.encode(request.getNewPassword()))
                 ))
                 .orElseThrow(UserNotFoundException::new);
+    }
+
+    public void checkPassword(String password, Integer id) {
+        Member member = memberRepository.findById(id)
+                .orElseThrow(UserNotFoundException::new);
+
+        if (!passwordEncoder.matches(password, member.getPassword()))
+            throw new InvalidPasswordException();
     }
 
     @Override
@@ -190,14 +198,6 @@ public class MemberServiceImpl implements MemberService {
                 .collect(Collectors.toList());
 
         return new MemberMyPageResponse(memberProfileResponse, new MemberLikePostsResponse(likePostsCount, likePosts));
-    }
-
-    public void checkPassword(String password, Integer id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-
-        if (!passwordEncoder.matches(password, member.getPassword()))
-            throw new InvalidPasswordException();
     }
 
 }

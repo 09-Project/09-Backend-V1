@@ -14,8 +14,8 @@ import java.io.IOException;
 @RequiredArgsConstructor
 public class ImageServiceImpl implements ImageService {
 
-    private final ImageRepository imageRepository;
     private final S3Service s3Service;
+    private final ImageRepository imageRepository;
 
     @Override
     @Transactional
