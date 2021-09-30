@@ -131,8 +131,19 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
+    @Transactional(readOnly = true)
     public List<OtherPostResponse> getOtherPosts() {
-        
+        return postRepository.otherPosts()
+                .stream()
+                .map(post -> {
+                    OtherPostResponse response = OtherPostResponse.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .image(post.getImage().getImageUrl())
+                            .build();
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
