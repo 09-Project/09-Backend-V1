@@ -21,7 +21,6 @@ import java.util.Date;
 @RequiredArgsConstructor
 public class JwtTokenProvider {
 
-    @Value("${jwt.secret}")
     private String SECRET_KEY;
 
     @Value("${jwt.header}")
@@ -38,8 +37,9 @@ public class JwtTokenProvider {
 
     private final CustomUserDetailsService customUserDetailsService;
 
-    protected String init() {
-        return Base64.getEncoder().encodeToString(SECRET_KEY.getBytes(StandardCharsets.UTF_8));
+    @Value("${jwt.secret}")
+    public void setSecretKey(String secretKey) {
+        this.SECRET_KEY = Base64.getEncoder().encodeToString(secretKey.getBytes(StandardCharsets.UTF_8));
     }
 
     public String createAccessToken(String username) {
@@ -49,7 +49,7 @@ public class JwtTokenProvider {
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, init())
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
@@ -60,7 +60,7 @@ public class JwtTokenProvider {
                 .setHeaderParam("typ", "JWT")
                 .setIssuedAt(new Date())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_EXPIRATION_TIME))
-                .signWith(SignatureAlgorithm.HS256, init())
+                .signWith(SignatureAlgorithm.HS256, SECRET_KEY)
                 .compact();
     }
 
@@ -70,7 +70,7 @@ public class JwtTokenProvider {
     }
 
     public Claims getUsername(String token) {
-        return Jwts.parser().setSigningKey(init()).parseClaimsJws(token).getBody();
+        return Jwts.parser().setSigningKey(SECRET_KEY).parseClaimsJws(token).getBody();
     }
 
     public String resolveToken(HttpServletRequest request) {
