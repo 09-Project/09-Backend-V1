@@ -20,7 +20,7 @@ public class S3Service {
     private final AmazonS3Client amazonS3Client;
 
     public String upload(MultipartFile image, String dirName) throws IOException {
-        String fileName = dirName + "/" + UUID.randomUUID() + image.getOriginalFilename();
+        String fileName = dirName + "/" + UUID.randomUUID() + image.getName();
 
         amazonS3Client.putObject(new PutObjectRequest(s3Config.getBucket(), fileName, image.getInputStream(), null)
                 .withCannedAcl(CannedAccessControlList.PublicRead));
