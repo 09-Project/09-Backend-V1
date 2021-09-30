@@ -13,7 +13,7 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class S3Config {
 
-    @Value("${cloud.aws.s3}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     @Value("${cloud.aws.region.static}")
