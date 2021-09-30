@@ -25,9 +25,6 @@ spring:
       - aws
       - credentials
 
-img:
-  path: ${IMG_PATH}
-
 jwt:
   header: ${HEADER}
   prefix: ${PREFIX}
