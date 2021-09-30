@@ -17,7 +17,6 @@ import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,10 +28,6 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class PostServiceImpl implements PostService {
-
-    @Value("${img.path}")
-    private String IMAGE_PATH;
-
     private final PostRepository postRepository;
     private final ImageRepository imageRepository;
     private final LikeRepository likeRepository;
@@ -52,8 +47,7 @@ public class PostServiceImpl implements PostService {
                 .likeCounts(0)
                 .build());
 
-        post.updateImage(imageRepository.findByImagePath(imageService.uploadFile(request.getImage(), post)).get());
-
+        imageService.uploadFile(request.getImage(), post);
         setPurpose(post);
     }
 
@@ -66,8 +60,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void modifyPost(PostRequest request, Integer id) throws IOException { // 이미지 코드 추가
-
-        postRepository.findById(id)
+        Post post = postRepository.findById(id)
                 .map(newPost -> newPost.updatePost(
                         request.getTitle(),
                         request.getContent(),
@@ -76,14 +69,7 @@ public class PostServiceImpl implements PostService {
                         request.getOpenChatLink()
                 ))
                 .orElseThrow(PostNotFoundException::new);
-
-/*        MultipartFile file = request.getImage();
-        UUID uuid = UUID.randomUUID();
-        Image image = imageRepository.findByPostId(id)
-                .map(newImage -> newImage.updateImage(uuid + "_" + file.getOriginalFilename()))
-                .orElseThrow(ImageNotFoundException::new);
-        file.transferTo(new File(IMAGE_PATH + image.getImage()));*/
-
+        imageService.updateFile(request.getImage(), post);
     }
 
     @Override
@@ -108,7 +94,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImagePath).orElseThrow(ImageNotFoundException::new))
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
                             .build();
                     return response;
                 })
@@ -131,10 +117,12 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImagePath).orElseThrow(ImageNotFoundException::new))
-                            .member(post.getMember())
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
                             .getLikes(post.getLikeCounts())
+                            .memberName(post.getMember().getName())
+                            .memberIntroduction(post.getMember().getIntroduction())
                             .postsCount(postRepository.countByMemberId(MemberFacade.getMemberId()))
+                            .everyLikeCounts(post.getMember().getEveryLikeCounts())
                             .build();
                     return response;
                 })
