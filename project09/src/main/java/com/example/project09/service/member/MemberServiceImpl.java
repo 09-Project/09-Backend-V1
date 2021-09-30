@@ -27,7 +27,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.io.IOException;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -131,15 +130,8 @@ public class MemberServiceImpl implements MemberService {
             throw new UserAlreadyExistsException();
 
         memberRepository.findById(MemberFacade.getMemberId())
-                .map(info -> {
-                            try {
-                                return info.updateInfo(request.getName(), request.getIntroduction(),
-                                        s3Service.getFileUrl(s3Service.upload(request.getProfile(), "static")));
-                            } catch (IOException exception) {
-                                exception.printStackTrace();
-                                throw new ImageNotFoundException();
-                            }
-                        }
+                .map(info -> info.updateInfo(request.getName(), request.getIntroduction(),
+                        s3Service.getFileUrl(s3Service.upload(request.getProfile(), "static")))
                 )
                 .orElseThrow(UserNotFoundException::new);
     }
@@ -182,8 +174,6 @@ public class MemberServiceImpl implements MemberService {
     @Transactional(readOnly = true)
     public MemberMyPageResponse getMyPage() {
         MemberProfileResponse memberProfileResponse = getMemberProfile(MemberFacade.getMemberId());
-
-        Integer likePostsCount = likeRepository.countByMemberId(MemberFacade.getMemberId());
         
         List<MemberLikePostsResponse.likePosts> likePosts = likeRepository.findByMemberId(MemberFacade.getMemberId())
                 .stream()
@@ -196,7 +186,8 @@ public class MemberServiceImpl implements MemberService {
                 })
                 .collect(Collectors.toList());
 
-        return new MemberMyPageResponse(memberProfileResponse, new MemberLikePostsResponse(likePostsCount, likePosts));
+        return new MemberMyPageResponse(memberProfileResponse,
+                new MemberLikePostsResponse(likeRepository.countByMemberId(MemberFacade.getMemberId()), likePosts));
     }
 
 }

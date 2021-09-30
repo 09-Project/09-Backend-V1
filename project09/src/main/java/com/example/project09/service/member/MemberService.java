@@ -7,14 +7,13 @@ import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
 import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
-import java.io.IOException;
 
 public interface MemberService {
     void signup(SignupRequest request);
     TokenResponse login(LoginRequest request);
     TokenResponse reissue(String token);
     void updatePassword(UpdatePasswordRequest request);
-    void updateInfo(UpdateInformationRequest request) throws IOException;
+    void updateInfo(UpdateInformationRequest request);
     MemberProfileResponse getMemberProfile(Integer id);
     MemberMyPageResponse getMyPage();
 }
