@@ -2,6 +2,7 @@ package com.example.project09.controller;
 
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
+import com.example.project09.payload.post.response.OtherPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.service.post.PostService;
 import lombok.RequiredArgsConstructor;
@@ -62,6 +63,11 @@ public class PostController {
     @GetMapping("/{post-id}")
     public EachPostResponse getEachPost(@PathVariable(name = "post-id") Integer id) {
         return postService.getEachPost(id);
+    }
+
+    @GetMapping("")
+    public List<OtherPostResponse> getOtherPosts() {
+        return postService.getOtherPosts();
     }
 
     @GetMapping("/search")
