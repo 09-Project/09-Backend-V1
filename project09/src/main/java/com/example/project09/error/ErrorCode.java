@@ -19,7 +19,9 @@ public enum ErrorCode {
     FAILED_CONVERT_FILE(400,"Failed Convert File"),
 
     LIKE_NOT_FOUND(404, "Like Not Found"),
-    LIKE_ALREADY_EXISTS(409, "Like Already Exists");
+    LIKE_ALREADY_EXISTS(409, "Like Already Exists"),
+
+    S3_CONNECTION_FAILED(500, "S3 Connection Failed");
 
     private final int status;
     private final String message;
