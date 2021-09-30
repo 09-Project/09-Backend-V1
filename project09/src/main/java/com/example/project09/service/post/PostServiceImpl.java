@@ -179,12 +179,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
-    public void removeAllLikes() {
-        likeRepository.deleteByMemberId(MemberFacade.getMemberId());
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<PostResponse> searchPosts(String keyword, Pageable pageable) {
         return postRepository.findByTitleContaining(keyword, pageable)

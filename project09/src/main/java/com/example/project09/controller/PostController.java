@@ -38,12 +38,6 @@ public class PostController {
         postService.removeLike(id);
     }
 
-    @DeleteMapping("/likes")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeAllLikes() {
-        postService.removeAllLikes();
-    }
-
     @PatchMapping(path = "/modify/{user-id}", consumes = {"multipart/form-data"})
     public void modifyPost(@PathVariable(name = "user-id") Integer id,
                            @Valid @ModelAttribute PostRequest request) throws IOException {
