@@ -1,6 +1,7 @@
 package com.example.project09.payload.post.response;
 
 import com.example.project09.entity.member.Member;
+import com.example.project09.entity.post.Completed;
 import com.example.project09.entity.post.Purpose;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -17,6 +18,7 @@ public class EachPostResponse {
     private String transactionRegion;
     private String openChatLink;
     private Purpose purpose;
+    private Completed completed;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String image;
