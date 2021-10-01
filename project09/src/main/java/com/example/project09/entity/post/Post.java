@@ -38,6 +38,9 @@ public class Post extends BaseTimeEntity {
 
     @Enumerated(EnumType.STRING)
     private Purpose purpose;
+
+    @Enumerated(EnumType.STRING)
+    private Completed completed;
     private Integer likeCounts;
 
     @ManyToOne(fetch = FetchType.LAZY)
