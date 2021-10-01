@@ -88,6 +88,7 @@ public class MemberServiceImpl implements MemberService {
         return new TokenResponse(tokenProvider.createAccessToken(refreshToken.getUsername()), token);
     }
 
+    @Transactional
     public TokenResponse createToken(String username) {
         String accessToken = tokenProvider.createAccessToken(username);
         String refreshToken = tokenProvider.createRefreshToken(username);
@@ -138,31 +139,15 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberProfileResponse getMemberProfile(Integer id) {
-        Integer everyLikeCounts = memberRepository.findById(id).orElseThrow().getEveryLikeCounts();
-
         return memberRepository.findById(id)
                 .map(member -> {
                     MemberProfileResponse memberProfileResponse = MemberProfileResponse.builder()
                             .name(member.getName())
                             .profileUrl(member.getProfileUrl())
                             .introduction(member.getIntroduction())
-                            .posts(postRepository.findByMemberId(id)
-                                    .stream().map(post -> {
-                                        PostResponse postResponse = PostResponse.builder()
-                                                .id(post.getId())
-                                                .title(post.getTitle())
-                                                .price(post.getPrice())
-                                                .transactionRegion(post.getTransactionRegion())
-                                                .purpose(post.getPurpose())
-                                                .createdDate(post.getCreatedDate())
-                                                .updatedDate(post.getUpdatedDate())
-                                                .image(imageRepository.findByPostId(post.getId())
-                                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
-                                                .build();
-                                        return postResponse;
-                                    }).collect(Collectors.toList()))
+                            .posts(getMemberPosts())
                             .postsCount(postRepository.countByMemberId(id))
-                            .getLikesCount(everyLikeCounts)
+                            .getLikesCount(memberRepository.findById(id).get().getEveryLikeCounts())
                             .build();
                     return memberProfileResponse;
                 })
@@ -172,21 +157,56 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional(readOnly = true)
     public MemberMyPageResponse getMyPage() {
-        MemberProfileResponse memberProfileResponse = getMemberProfile(MemberFacade.getMemberId());
-        
-        List<MemberLikePostsResponse.likePosts> likePosts = likeRepository.findByMemberId(MemberFacade.getMemberId())
+        return new MemberMyPageResponse(getMemberProfile(MemberFacade.getMemberId()),
+                new MemberLikePostsResponse(likePostCounts(MemberFacade.getMemberId()), getMemberLikePosts()));
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostResponse> getMemberPosts() {
+        return postRepository.findByMemberId(MemberFacade.getMemberId())
+                .stream()
+                .map(post -> {
+                    PostResponse postResponse = PostResponse.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .price(post.getPrice())
+                            .transactionRegion(post.getTransactionRegion())
+                            .purpose(post.getPurpose())
+                            .completed(post.getCompleted())
+                            .createdDate(post.getCreatedDate())
+                            .updatedDate(post.getUpdatedDate())
+                            .image(imageRepository.findByPostId(post.getId())
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .build();
+                    return postResponse;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Transactional(readOnly = true)
+    public List<PostResponse> getMemberLikePosts() {
+        return likeRepository.findByMemberId(MemberFacade.getMemberId())
                 .stream()
                 .map(like -> {
-                    MemberLikePostsResponse.likePosts response = MemberLikePostsResponse.likePosts.builder()
+                    PostResponse response = PostResponse.builder()
+                            .id(like.getId())
                             .title(like.getPost().getTitle())
-                            .image(like.getPost().getImage().getImageUrl())
+                            .price(like.getPost().getPrice())
+                            .transactionRegion(like.getPost().getTransactionRegion())
+                            .purpose(like.getPost().getPurpose())
+                            .createdDate(like.getPost().getCreatedDate())
+                            .updatedDate(like.getPost().getUpdatedDate())
+                            .image(imageRepository.findByPostId(like.getPost().getId())
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
                             .build();
                     return response;
                 })
                 .collect(Collectors.toList());
+    }
 
-        return new MemberMyPageResponse(memberProfileResponse,
-                new MemberLikePostsResponse(likeRepository.countByMemberId(MemberFacade.getMemberId()), likePosts));
+    @Transactional(readOnly = true)
+    public Integer likePostCounts(Integer memberId) {
+        return likeRepository.countByMemberId(memberId);
     }
 
 }
