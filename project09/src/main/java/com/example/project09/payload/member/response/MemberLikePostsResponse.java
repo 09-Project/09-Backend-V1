@@ -1,7 +1,7 @@
 package com.example.project09.payload.member.response;
 
+import com.example.project09.payload.post.response.PostResponse;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import java.util.List;
 
@@ -9,14 +9,5 @@ import java.util.List;
 @AllArgsConstructor
 public class MemberLikePostsResponse {
     private Integer likePostsCount;
-    private List<likePosts> likePosts;
-
-    @Getter
-    @Builder
-    @AllArgsConstructor
-    public static class likePosts {
-        private String title;
-        private String image;
-    }
-
+    private List<PostResponse> likePosts;
 }
