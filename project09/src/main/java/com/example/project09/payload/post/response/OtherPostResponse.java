@@ -1,5 +1,6 @@
 package com.example.project09.payload.post.response;
 
+import com.example.project09.entity.post.Completed;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -11,4 +12,5 @@ public class OtherPostResponse {
     private int id;
     private String title;
     private String image;
+    private Completed completed;
 }

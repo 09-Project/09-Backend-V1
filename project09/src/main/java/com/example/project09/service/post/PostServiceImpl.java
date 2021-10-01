@@ -4,6 +4,7 @@ import com.example.project09.entity.image.Image;
 import com.example.project09.entity.image.ImageRepository;
 import com.example.project09.entity.like.Like;
 import com.example.project09.entity.like.LikeRepository;
+import com.example.project09.entity.post.Completed;
 import com.example.project09.entity.post.Post;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.post.Purpose;
@@ -44,6 +45,7 @@ public class PostServiceImpl implements PostService {
                 .transactionRegion(request.getTransactionRegion())
                 .openChatLink(request.getOpenChatLink())
                 .purpose(Purpose.CO_PURCHASE)
+                .completed(Completed.IN_PROGRESS)
                 .member(MemberFacade.getMember())
                 .likeCounts(0)
                 .build());
@@ -92,6 +94,7 @@ public class PostServiceImpl implements PostService {
                             .price(post.getPrice())
                             .transactionRegion(post.getTransactionRegion())
                             .purpose(post.getPurpose())
+                            .completed(post.getCompleted())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
@@ -115,6 +118,7 @@ public class PostServiceImpl implements PostService {
                             .transactionRegion(post.getTransactionRegion())
                             .openChatLink(post.getOpenChatLink())
                             .purpose(post.getPurpose())
+                            .completed(post.getCompleted())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
@@ -140,6 +144,7 @@ public class PostServiceImpl implements PostService {
                             .id(post.getId())
                             .title(post.getTitle())
                             .image(post.getImage().getImageUrl())
+                            .completed(post.getCompleted())
                             .build();
                     return response;
                 })
@@ -190,6 +195,7 @@ public class PostServiceImpl implements PostService {
                             .price(post.getPrice())
                             .transactionRegion(post.getTransactionRegion())
                             .purpose(post.getPurpose())
+                            .completed(post.getCompleted())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
