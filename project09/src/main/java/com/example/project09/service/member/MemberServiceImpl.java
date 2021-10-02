@@ -51,9 +51,9 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public void signup(SignupRequest request) {
         if(memberRepository.findByName(request.getName()).isPresent())
-            throw new UserAlreadyExistsException();
+            throw new MemberNameAlreadyExistsException();
         else if(memberRepository.findByUsername(request.getUsername()).isPresent())
-            throw new UserAlreadyExistsException();
+            throw new MemberUsernameAlreadyExistsException();
 
         memberRepository.save(Member.builder()
                 .name(request.getName())
@@ -68,7 +68,7 @@ public class MemberServiceImpl implements MemberService {
     @Transactional
     public TokenResponse login(LoginRequest request) {
         Member member = memberRepository.findByUsername(request.getUsername())
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(MemberNotFoundException::new);
 
         if(!passwordEncoder.matches(request.getPassword(), member.getPassword()))
             throw new InvalidPasswordException();
@@ -78,63 +78,35 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public TokenResponse reissue(String token) {
-        if(!tokenProvider.validateToken(token) || !tokenProvider.isRefreshToken(token))
-            throw new InvalidTokenException();
-
-        RefreshToken refreshToken = refreshTokenRepository.findByRefreshToken(token)
+    public TokenResponse reissue(String refreshToken) {
+        tokenProvider.isRefreshToken(refreshToken);
+        RefreshToken newRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
                 .map(refresh -> refresh.update(REFRESH_TOKEN_EXPIRATION_TIME))
                 .orElseThrow(InvalidTokenException::new);
 
-        return new TokenResponse(tokenProvider.createAccessToken(refreshToken.getUsername()), token);
-    }
-
-    @Transactional
-    public TokenResponse createToken(String username) {
-        String accessToken = tokenProvider.createAccessToken(username);
-        String refreshToken = tokenProvider.createRefreshToken(username);
-
-        refreshTokenRepository.save(
-                RefreshToken.builder()
-                        .username(username)
-                        .refreshToken(refreshToken)
-                        .refreshExpiration(REFRESH_TOKEN_EXPIRATION_TIME)
-                        .build());
-
-        return new TokenResponse(accessToken, refreshToken);
+        return new TokenResponse(tokenProvider.createAccessToken(newRefreshToken.getUsername()), refreshToken);
     }
 
     @Override
     @Transactional
     public void updatePassword(UpdatePasswordRequest request) {
-        checkPassword(request.getPassword(), MemberFacade.getMemberId());
-
+        checkPassword(request.getPassword());
         memberRepository.findById(MemberFacade.getMemberId())
-                .map(password -> memberRepository.save(
-                        password.updatePassword(passwordEncoder.encode(request.getNewPassword()))
-                ))
-                .orElseThrow(UserNotFoundException::new);
-    }
-
-    public void checkPassword(String password, Integer id) {
-        Member member = memberRepository.findById(id)
-                .orElseThrow(UserNotFoundException::new);
-
-        if (!passwordEncoder.matches(password, member.getPassword()))
-            throw new InvalidPasswordException();
+                .map(password -> password.updatePassword(passwordEncoder.encode(request.getNewPassword())))
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
     @Transactional
     public void updateInfo(UpdateInformationRequest request) {
         if(memberRepository.findByName(request.getName()).isPresent())
-            throw new UserAlreadyExistsException();
+            throw new MemberNameAlreadyExistsException();
 
         memberRepository.findById(MemberFacade.getMemberId())
                 .map(info -> info.updateInfo(request.getName(), request.getIntroduction(),
                         s3Service.getFileUrl(s3Service.upload(request.getProfile(), "static")))
                 )
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
@@ -154,7 +126,7 @@ public class MemberServiceImpl implements MemberService {
                             .build();
                     return memberProfileResponse;
                 })
-                .orElseThrow(UserNotFoundException::new);
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Override
@@ -162,6 +134,29 @@ public class MemberServiceImpl implements MemberService {
     public MemberMyPageResponse getMyPage() {
         return new MemberMyPageResponse(getMemberProfile(MemberFacade.getMemberId()),
                 new MemberLikePostsResponse(likePostCounts(MemberFacade.getMemberId()), getMemberLikePosts()));
+    }
+
+    @Transactional
+    public TokenResponse createToken(String username) {
+        String accessToken = tokenProvider.createAccessToken(username);
+        String refreshToken = tokenProvider.createRefreshToken(username);
+
+        refreshTokenRepository.save(
+                RefreshToken.builder()
+                        .username(username)
+                        .refreshToken(refreshToken)
+                        .refreshExpiration(REFRESH_TOKEN_EXPIRATION_TIME)
+                        .build());
+
+        return new TokenResponse(accessToken, refreshToken);
+    }
+
+    public void checkPassword(String password) {
+        Member member = memberRepository.findById(MemberFacade.getMemberId())
+                .orElseThrow(MemberNotFoundException::new);
+
+        if (!passwordEncoder.matches(password, member.getPassword()))
+            throw new InvalidPasswordException();
     }
 
     @Transactional(readOnly = true)
