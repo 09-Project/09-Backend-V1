@@ -1,5 +1,6 @@
 package com.example.project09.controller;
 
+import com.example.project09.exception.TooLongNameException;
 import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.TokenResponse;
@@ -21,7 +22,7 @@ public class MemberController {
 
     @PostMapping("/auth/signup")
     @ResponseStatus(HttpStatus.CREATED)
-    public void signup(@Valid @RequestBody SignupRequest request) {
+    public void signup(@Valid @RequestBody SignupRequest request) throws TooLongNameException {
         memberService.signup(request);
     }
 

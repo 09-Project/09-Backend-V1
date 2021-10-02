@@ -7,6 +7,7 @@ import lombok.Getter;
 @AllArgsConstructor
 public enum ErrorCode {
 
+    TOO_LONG_NAME(400, "Too Long Name"),
     INVALID_PASSWORD(401, "Invalid Password"),
     INVALID_TOKEN(401, "Invalid Token"),
 
