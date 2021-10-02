@@ -20,36 +20,13 @@ import java.util.List;
 public class PostController {
     private final PostService postService;
 
-    @PostMapping(path = "/create", consumes = {"multipart/form-data"})
+    @PostMapping(consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
     public void createPost(@Valid @ModelAttribute PostRequest request) throws IOException {
         postService.createPost(request);
     }
 
-    @PostMapping("/like/{post-id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    public void addLike(@PathVariable(name = "post-id") Integer id) {
-        postService.addLike(id);
-    }
-
-    @DeleteMapping("/like/{post-id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    public void removeLike(@PathVariable(name = "post-id") Integer id) {
-        postService.removeLike(id);
-    }
-
-    @PatchMapping(path = "/modify/{user-id}", consumes = {"multipart/form-data"})
-    public void modifyPost(@PathVariable(name = "user-id") Integer id,
-                           @Valid @ModelAttribute PostRequest request) throws IOException {
-        postService.modifyPost(request, id);
-    }
-
-    @DeleteMapping("/{post-id}")
-    public void removePost(@PathVariable(name = "post-id") Integer id) {
-        postService.removePost(id);
-    }
-
-    @GetMapping("")
+    @GetMapping
     public List<PostResponse> getAllPosts(@PageableDefault(size = 16) Pageable pageable) {
         return postService.getAllPosts(pageable);
     }
@@ -62,6 +39,29 @@ public class PostController {
     @GetMapping("/other")
     public List<OtherPostResponse> getOtherPosts() {
         return postService.getOtherPosts();
+    }
+
+    @PatchMapping(path = "/{post-id}", consumes = {"multipart/form-data"})
+    public void modifyPost(@PathVariable(name = "post-id") Integer id,
+                           @Valid @ModelAttribute PostRequest request) throws IOException {
+        postService.modifyPost(request, id);
+    }
+
+    @DeleteMapping("/{post-id}")
+    public void removePost(@PathVariable(name = "post-id") Integer id) {
+        postService.removePost(id);
+    }
+
+    @PostMapping("/like/{post-id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void addLike(@PathVariable(name = "post-id") Integer id) {
+        postService.addLike(id);
+    }
+
+    @DeleteMapping("/like/{post-id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void removeLike(@PathVariable(name = "post-id") Integer id) {
+        postService.removeLike(id);
     }
 
     @GetMapping("/search")
