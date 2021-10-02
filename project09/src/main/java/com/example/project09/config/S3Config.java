@@ -1,4 +1,4 @@
-package com.example.project09.security.config;
+package com.example.project09.config;
 
 import com.amazonaws.auth.AWSStaticCredentialsProvider;
 import com.amazonaws.auth.BasicAWSCredentials;
