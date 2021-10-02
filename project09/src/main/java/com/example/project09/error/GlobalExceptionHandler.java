@@ -12,7 +12,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BusinessException.class)
     public ResponseEntity<ErrorResponse> handleException(BusinessException e) {
         final ErrorCode errorCode = e.getErrorCode();
-        return new ResponseEntity<>(new ErrorResponse(errorCode.getStatus(), errorCode.getMessage()),
+        return new ResponseEntity<>(new ErrorResponse(errorCode.getMessage()),
                 HttpStatus.valueOf(errorCode.getStatus()));
     }
 
