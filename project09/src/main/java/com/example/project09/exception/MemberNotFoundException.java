@@ -5,6 +5,6 @@ import com.example.project09.error.exception.BusinessException;
 
 public class MemberNotFoundException extends BusinessException {
     public MemberNotFoundException() {
-        super(ErrorCode.USER_NOT_FOUND);
+        super(ErrorCode.MEMBER_NOT_FOUND);
     }
 }

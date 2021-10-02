@@ -13,8 +13,7 @@ public enum ErrorCode {
     EXPIRED_ACCESS_TOKEN(401, "Expired Access Token"),
     EXPIRED_REFRESH_TOKEN(401, "Expired Refresh Token"),
 
-    // 회원,
-    TOO_LONG_NAME(400, "Too Long Name"),
+    // 회원
     INVALID_PASSWORD(401, "Invalid Password"),
     MEMBER_NOT_FOUND(404, "Member Not Found"),
     MEMBER_NAME_ALREADY_EXISTS(409, "Member Name Already Exists"),
