@@ -47,8 +47,8 @@ public class MemberController {
         memberService.updateInfo(request);
     }
 
-    @GetMapping("/{user-id}")
-    public MemberProfileResponse getMemberProfile(@PathVariable(name = "user-id") Integer id) {
+    @GetMapping("/{member-id}")
+    public MemberProfileResponse getMemberProfile(@PathVariable(name = "member-id") Integer id) {
         return memberService.getMemberProfile(id);
     }
 
