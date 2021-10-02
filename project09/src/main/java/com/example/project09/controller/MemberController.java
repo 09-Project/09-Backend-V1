@@ -12,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.io.IOException;
 
 @RestController
 @RequiredArgsConstructor
@@ -44,7 +43,7 @@ public class MemberController {
 
     @PatchMapping(path = "/information", consumes = {"multipart/form-data"})
     @ResponseStatus(HttpStatus.CREATED)
-    public void updateInfo(@Valid @ModelAttribute UpdateInformationRequest request) throws IOException {
+    public void updateInfo(@Valid @ModelAttribute UpdateInformationRequest request) {
         memberService.updateInfo(request);
     }
 
