@@ -39,12 +39,12 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
                 .antMatchers("/member/auth/signup").permitAll()
                 .antMatchers("/member/auth/login").permitAll()
                 .antMatchers("/member/auth/reissue").permitAll()
+                .antMatchers("/member/{user-id}").permitAll()
 
-                .antMatchers("/post/").permitAll()
+                .antMatchers("/post").permitAll()
                 .antMatchers("/post/search").permitAll()
                 .antMatchers("/post/{post-id}").permitAll()
-
-                .antMatchers("/member/profile/{user-id}").permitAll()
+                .antMatchers("/post/other").permitAll()
                 .anyRequest().authenticated()
 
                 .and()
