@@ -16,4 +16,6 @@ public class MemberProfileResponse {
     private List<PostResponse> posts;
     private Integer postsCount;
     private Integer getLikesCount;
+    private Integer inProgressPostsCount;
+    private Integer completedPostsCount;
 }

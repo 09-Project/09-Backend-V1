@@ -6,6 +6,7 @@ import com.example.project09.entity.like.LikeRepository;
 import com.example.project09.entity.member.Member;
 import com.example.project09.entity.member.MemberRepository;
 import com.example.project09.entity.member.Role;
+import com.example.project09.entity.post.Completed;
 import com.example.project09.entity.post.PostRepository;
 import com.example.project09.entity.refreshtoken.RefreshToken;
 import com.example.project09.entity.refreshtoken.RefreshTokenRepository;
@@ -148,6 +149,8 @@ public class MemberServiceImpl implements MemberService {
                             .posts(getMemberPosts())
                             .postsCount(postRepository.countByMemberId(id))
                             .getLikesCount(memberRepository.findById(id).get().getEveryLikeCounts())
+                            .inProgressPostsCount(postRepository.countByMemberIdAndCompleted(id, Completed.IN_PROGRESS))
+                            .completedPostsCount(postRepository.countByMemberIdAndCompleted(id, Completed.COMPLETED))
                             .build();
                     return memberProfileResponse;
                 })
