@@ -17,7 +17,7 @@ public enum ErrorCode {
     INVALID_PASSWORD(401, "Invalid Password"),
     MEMBER_NOT_FOUND(404, "Member Not Found"),
     MEMBER_NAME_ALREADY_EXISTS(409, "Member Name Already Exists"),
-    MEMBER_USERNAME_ALREADY_EXISTS(409, "Member Username Already Exists"),
+    MEMBER_ALREADY_EXISTS(409, "Member Already Exists"),
 
     // 상품
     POST_NOT_FOUND(404, "Post Not Found"),
