@@ -5,6 +5,7 @@ import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.TokenResponse;
 import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
+import com.example.project09.payload.member.response.MemberInfoResponse;
 import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
 import com.example.project09.service.member.MemberService;
@@ -51,6 +52,12 @@ public class MemberController {
     @ResponseStatus(HttpStatus.CREATED)
     public void updateInfo(@Valid @ModelAttribute UpdateInformationRequest request) {
         memberService.updateInfo(request);
+    }
+
+    @ApiOperation(value = "회원 정보 보기", notes = "닉네임, 자기소개, 프로필 사진을 불러온다.")
+    @GetMapping("/information")
+    public MemberInfoResponse getMyInfo() {
+        return memberService.getMyInfo();
     }
 
     @ApiOperation(value = "프로필 보기", notes = "원하는 사용자의 회원 정보, 상품, 거래내역을 확인한다.")

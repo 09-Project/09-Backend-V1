@@ -17,6 +17,7 @@ import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.TokenResponse;
 import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
+import com.example.project09.payload.member.response.MemberInfoResponse;
 import com.example.project09.payload.member.response.MemberLikePostsResponse;
 import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
@@ -134,6 +135,21 @@ public class MemberServiceImpl implements MemberService {
     public MemberMyPageResponse getMyPage() {
         return new MemberMyPageResponse(getMemberProfile(MemberFacade.getMemberId()),
                 new MemberLikePostsResponse(likePostCounts(MemberFacade.getMemberId()), getMemberLikePosts()));
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public MemberInfoResponse getMyInfo() {
+        return memberRepository.findById(MemberFacade.getMemberId())
+                .map(member -> {
+                    MemberInfoResponse response = MemberInfoResponse.builder()
+                            .name(member.getName())
+                            .profileUrl(member.getProfileUrl())
+                            .introduction(member.getIntroduction())
+                            .build();
+                    return response;
+                })
+                .orElseThrow(MemberNotFoundException::new);
     }
 
     @Transactional
