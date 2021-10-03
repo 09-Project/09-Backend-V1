@@ -27,7 +27,6 @@ public enum ErrorCode {
     IMAGE_NOT_FOUND(404, "Image Not Found"),
 
     // S3
-    FAILED_CONVERT_FILE(400,"Failed Convert File"),
     S3_CONNECTION_FAILED(500, "S3 Connection Failed"),
 
     // 찜
