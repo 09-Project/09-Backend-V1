@@ -18,7 +18,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodValidException(MethodArgumentNotValidException e) {
+    public ResponseEntity<ErrorResponse> methodValidException() {
         return new ResponseEntity<>(new ErrorResponse("Max Value"), HttpStatus.BAD_REQUEST);
     }
 
