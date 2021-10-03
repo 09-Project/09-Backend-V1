@@ -1,14 +1,14 @@
 package com.example.project09.payload.post.request;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import org.springframework.web.multipart.MultipartFile;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
 @Getter
-@AllArgsConstructor
+@NoArgsConstructor
 public class PostRequest {
 
     @NotBlank

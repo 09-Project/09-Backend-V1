@@ -1,6 +1,5 @@
 package com.example.project09.payload.post.response;
 
-import com.example.project09.entity.member.Member;
 import com.example.project09.entity.post.Completed;
 import com.example.project09.entity.post.Purpose;
 import lombok.AllArgsConstructor;
