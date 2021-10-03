@@ -30,6 +30,22 @@ spring:
   jackson:
     property-naming-strategy: SNAKE_CASE
 
+springdoc:
+  version: 1.0.0
+  api-docs:
+    path: /api-docs
+  default-consumes-media-type: application/json
+  default-produces-media-type: application/json
+  swagger-ui:
+    operations-sorter: alpha
+    tags-sorter: alpha
+    path: /swagger-ui.html
+    displayRequestDuration: true
+    groups-order: DESC
+  paths-to-match:
+    - /post/**
+    - /member/**
+
 jwt:
   header: ${HEADER}
   prefix: ${PREFIX}
