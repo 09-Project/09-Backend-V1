@@ -1,5 +1,6 @@
 package com.example.project09.config;
 
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import springfox.documentation.builders.ApiInfoBuilder;
@@ -14,7 +15,10 @@ import java.util.Set;
 
 @Configuration
 @EnableSwagger2
+@RequiredArgsConstructor
 public class SwaggerConfig {
+    private final String TITLE = "PROJECT09";
+    private final String DESCRIPTION = "공동구매 API 명세서입니다.";
 
     @Bean
     public Docket api() {
@@ -44,8 +48,9 @@ public class SwaggerConfig {
 
     private ApiInfo getApiInfo() {
         return new ApiInfoBuilder()
-                .title("PROJECT09 API")
-                .description("공동구매 API 명세서입니다.")
+                .title(TITLE)
+                .description(DESCRIPTION)
                 .build();
     }
+
 }
