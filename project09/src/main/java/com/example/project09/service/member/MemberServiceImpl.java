@@ -80,8 +80,10 @@ public class MemberServiceImpl implements MemberService {
     public TokenResponse reissue(String refreshToken) {
         tokenProvider.isRefreshToken(refreshToken);
         RefreshToken newRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
-                .map(refresh -> refresh.update(REFRESH_TOKEN_EXPIRATION_TIME))
-                .orElseThrow(InvalidTokenException::new);
+                .map(refresh -> refreshTokenRepository.save(
+                        refresh.update(REFRESH_TOKEN_EXPIRATION_TIME)
+                ))
+                .orElseThrow(RefreshTokenNotFoundException::new);
 
         return new TokenResponse(tokenProvider.createAccessToken(newRefreshToken.getUsername()), refreshToken);
     }

@@ -12,6 +12,7 @@ public enum ErrorCode {
     INVALID_TOKEN(401, "Invalid Token"),
     EXPIRED_ACCESS_TOKEN(401, "Expired Access Token"),
     EXPIRED_REFRESH_TOKEN(401, "Expired Refresh Token"),
+    REFRESH_TOKEN_NOT_FOUND(404, "Refresh Token Not Found"),
 
     // 회원
     INVALID_PASSWORD(401, "Invalid Password"),
