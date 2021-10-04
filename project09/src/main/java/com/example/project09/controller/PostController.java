@@ -45,7 +45,7 @@ public class PostController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "상품 올리기", description = "제목, 내용, 가격, 거래 지역, 오픈 채팅방 링크, 상품 이미지, 상품 목적을 올린다.")
-    public void createPost(@Valid @ModelAttribute PostRequest request) throws IOException {
+    public void createPost(@ModelAttribute @Valid PostRequest request) throws IOException {
         postService.createPost(request);
     }
 
@@ -107,14 +107,14 @@ public class PostController {
     @Operation(summary = "상품 수정하기",
             description = "원하는 상품의 제목, 내용, 가격, 거래 지역, 오픈 채팅방 링크, 상품 이미지, 상품 목적을 수정한다.")
     public void modifyPost(@Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id,
-                           @Valid @ModelAttribute PostRequest request) throws IOException {
+                           @ModelAttribute @Valid PostRequest request) throws IOException {
         postService.modifyPost(request, id);
     }
 
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "상품 삭제하기 성공",
+            @ApiResponse(responseCode = "204", description = "상품 삭제하기 성공",
                     content = @Content(schema = @Schema(hidden = true))),
             @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),

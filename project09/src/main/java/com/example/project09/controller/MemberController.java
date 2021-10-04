@@ -40,7 +40,7 @@ public class MemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "회원 가입", description = "닉네임, 아이디, 비밀번호를 입력해서 가입한다.")
-    public void signup(@Valid @RequestBody SignupRequest request) {
+    public void signup(@RequestBody @Valid SignupRequest request) {
         memberService.signup(request);
     }
 
@@ -54,7 +54,7 @@ public class MemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "로그인", description = "아이디, 비밀번호를 입력해서 로그인한다.")
-    public TokenResponse login(@Valid @RequestBody LoginRequest request) {
+    public TokenResponse login(@RequestBody @Valid LoginRequest request) {
         return memberService.login(request);
     }
 
@@ -89,7 +89,7 @@ public class MemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "비밀번호 변경", description = "기존 비밀번호와 새로운 비밀번호를 입력해서 변경한다.")
-    public void updatePassword(@Valid @RequestBody UpdatePasswordRequest request) {
+    public void updatePassword(@RequestBody @Valid UpdatePasswordRequest request) {
         memberService.updatePassword(request);
     }
 
@@ -112,7 +112,7 @@ public class MemberController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "회원 정보 변경", description = "닉네임, 프로필 사진, 자기소개를 입력해 회원 정보를 수정한다.")
-    public void updateInfo(@Valid @ModelAttribute UpdateInformationRequest request) {
+    public void updateInfo(@ModelAttribute @Valid UpdateInformationRequest request) {
         memberService.updateInfo(request);
     }
 
