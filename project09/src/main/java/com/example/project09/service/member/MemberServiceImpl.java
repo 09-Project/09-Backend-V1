@@ -51,8 +51,10 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void signup(SignupRequest request) {
-        if(memberRepository.findByNameOrUsername(request.getName(), request.getUsername()).isPresent())
-            throw new MemberAlreadyExistsException();
+        if(memberRepository.findByName(request.getName()).isPresent())
+            throw new MemberNameAlreadyExistsException();
+        else if(memberRepository.findByUsername(request.getUsername()).isPresent())
+            throw new MemberUsernameAlreadyExistsException();
 
         memberRepository.save(Member.builder()
                 .name(request.getName())
