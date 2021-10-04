@@ -11,7 +11,7 @@ public class MemberFacade {
     public static Member getMember() {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-        if(authentication == null || authentication.getPrincipal() == null )
+        if(authentication == null || authentication.getPrincipal() == null)
             throw new MemberNotFoundException();
 
         return (Member) authentication.getPrincipal();
