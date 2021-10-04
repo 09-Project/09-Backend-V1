@@ -14,5 +14,5 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Integer countByMemberIdAndCompleted(Integer id, Completed completed);
 
     @Query(value = "select * from tbl_post order by id desc limit 8", nativeQuery = true)
-    List<Post> otherPosts();
+    List<Post> getOtherPosts();
 }
