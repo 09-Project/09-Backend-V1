@@ -14,6 +14,7 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
@@ -50,6 +51,7 @@ public class PostController {
     }
 
     @GetMapping
+    @PageableAsQueryParam
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "전체 상품 불러오기 성공",
                     content = @Content(schema = @Schema(hidden = true))),
@@ -57,7 +59,8 @@ public class PostController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "전체 상품 보기", description = "전체 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
-    public List<PostResponse> getAllPosts(@PageableDefault(size = 16) Pageable pageable) {
+    public List<PostResponse> getAllPosts(
+            @Parameter(hidden = true) @PageableDefault(size = 16) Pageable pageable) {
         return postService.getAllPosts(pageable);
     }
 
@@ -175,6 +178,7 @@ public class PostController {
         postService.removeLike(id);
     }
 
+    @PageableAsQueryParam
     @GetMapping("/search")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "검색 결과 불러오기 성공",
@@ -185,7 +189,7 @@ public class PostController {
     })
     @Operation(summary = "상품 검색하기", description = "키워드가 제목에 포함된 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
     public List<PostResponse> searchPosts(@RequestParam String keyword,
-                                          @PageableDefault(size = 16) Pageable pageable) {
+                                          @Parameter(hidden = true) @PageableDefault(size = 16) Pageable pageable) {
         return postService.searchPosts(keyword, pageable);
     }
 
