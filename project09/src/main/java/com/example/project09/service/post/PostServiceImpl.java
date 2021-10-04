@@ -78,6 +78,9 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void removePost(Integer id) {
+        if(!postRepository.findById(id).isPresent())
+            throw new PostNotFoundException();
+
         imageService.removeFile(id);
         postRepository.deleteById(id);
     }
@@ -126,7 +129,7 @@ public class PostServiceImpl implements PostService {
                             .getLikes(post.getLikeCounts())
                             .memberName(post.getMember().getName())
                             .memberIntroduction(post.getMember().getIntroduction())
-                            .postsCount(postRepository.countByMemberId(MemberFacade.getMemberId()))
+                            .postsCount(postRepository.countByMemberId(post.getMember().getId()))
                             .everyLikeCounts(post.getMember().getEveryLikeCounts())
                             .build();
                     return response;
@@ -137,7 +140,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public List<OtherPostResponse> getOtherPosts() {
-        return postRepository.otherPosts()
+        return postRepository.getOtherPosts()
                 .stream()
                 .map(post -> {
                     OtherPostResponse response = OtherPostResponse.builder()
@@ -159,7 +162,8 @@ public class PostServiceImpl implements PostService {
 
         likeRepository.save(
                 Like.builder()
-                        .post(postRepository.findById(id).orElseThrow(PostNotFoundException::new))
+                        .post(postRepository.findById(id)
+                                .orElseThrow(PostNotFoundException::new))
                         .member(MemberFacade.getMember())
                         .build());
 
@@ -176,7 +180,8 @@ public class PostServiceImpl implements PostService {
     @Transactional
     public void removeLike(Integer id) {
         likeRepository.delete(
-                likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).orElseThrow(LikeNotFoundException::new)
+                likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id)
+                        .orElseThrow(LikeNotFoundException::new)
         );
         postRepository.findById(id)
                 .map(post -> post.getMember().removeLikeCounts())
