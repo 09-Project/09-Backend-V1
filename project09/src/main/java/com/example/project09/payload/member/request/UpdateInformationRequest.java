@@ -21,5 +21,5 @@ public class UpdateInformationRequest {
     private String introduction;
 
     @NotNull
-    private MultipartFile profile;
+    private MultipartFile profileUrl;
 }

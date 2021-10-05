@@ -107,7 +107,7 @@ public class MemberServiceImpl implements MemberService {
 
         memberRepository.findById(MemberFacade.getMemberId())
                 .map(info -> info.updateInfo(request.getName(), request.getIntroduction(),
-                        s3Service.getFileUrl(s3Service.upload(request.getProfile(), "static")))
+                        s3Service.getFileUrl(s3Service.upload(request.getProfileUrl(), "static")))
                 )
                 .orElseThrow(MemberNotFoundException::new);
     }
