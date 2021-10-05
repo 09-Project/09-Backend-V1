@@ -46,6 +46,7 @@ springdoc:
   paths-to-match:
     - /post/**
     - /member/**
+    - /like/**
 
 jwt:
   header: ${HEADER}

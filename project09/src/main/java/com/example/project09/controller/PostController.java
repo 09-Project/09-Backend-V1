@@ -50,6 +50,29 @@ public class PostController {
         postService.createPost(request);
     }
 
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @PatchMapping(path = "/{post-id}", consumes = {"multipart/form-data"})
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "상품 수정하기 성공",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "1.상품이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "S3와의 연결이 실패되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Operation(summary = "상품 수정하기",
+            description = "원하는 상품의 제목, 내용, 가격, 거래 지역, 오픈 채팅방 링크, 상품 이미지, 상품 목적을 수정한다.")
+    public void modifyPost(@Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id,
+                           @ModelAttribute @Valid PostRequest request) throws IOException {
+        postService.modifyPost(request, id);
+    }
+
     @GetMapping
     @PageableAsQueryParam
     @ApiResponses(value = {
@@ -91,29 +114,6 @@ public class PostController {
         return postService.getOtherPosts();
     }
 
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @PatchMapping(path = "/{post-id}", consumes = {"multipart/form-data"})
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "상품 수정하기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
-            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401",
-                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "1.상품이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "S3와의 연결이 실패되었습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @Operation(summary = "상품 수정하기",
-            description = "원하는 상품의 제목, 내용, 가격, 거래 지역, 오픈 채팅방 링크, 상품 이미지, 상품 목적을 수정한다.")
-    public void modifyPost(@Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id,
-                           @ModelAttribute @Valid PostRequest request) throws IOException {
-        postService.modifyPost(request, id);
-    }
-
     @DeleteMapping("/{post-id}")
     @ResponseStatus(HttpStatus.NO_CONTENT)
     @ApiResponses(value = {
@@ -134,48 +134,6 @@ public class PostController {
     public void removePost(
             @Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id) {
         postService.removePost(id);
-    }
-
-    @PostMapping("/like/{post-id}")
-    @ResponseStatus(HttpStatus.CREATED)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "201", description = "찜하기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
-            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401",
-                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "1.상품이 존재하지 않습니다.\t\n2.회원이 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "409", description = "찜이 이미 존재합니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @Operation(summary = "찜하기", description = "원하는 상품에 찜을 추가한다.")
-    public void addLike(
-            @Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id) {
-        postService.addLike(id);
-    }
-
-    @DeleteMapping("/like/{post-id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "찜 취소하기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
-            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401",
-                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "1.찜이 존재하지 않습니다.\t\n2.상품이 존재하지 않습니다.\t\n3.회원이 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @Operation(summary = "찜 취소하기", description = "원하는 상품의 찜을 취소한다.")
-    public void removeLike(
-            @Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id) {
-        postService.removeLike(id);
     }
 
     @PageableAsQueryParam
