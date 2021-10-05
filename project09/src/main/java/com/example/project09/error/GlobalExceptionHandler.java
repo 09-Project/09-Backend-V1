@@ -18,8 +18,9 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(MethodArgumentNotValidException.class)
-    public ResponseEntity<ErrorResponse> methodValidException() {
-        return new ResponseEntity<>(new ErrorResponse("Over Max Value"), HttpStatus.BAD_REQUEST);
+    public ResponseEntity<ErrorResponse> methodValidException(MethodArgumentNotValidException e) {
+        return new ResponseEntity<>(
+                new ErrorResponse("요청이 잘못되었습니다."), HttpStatus.BAD_REQUEST);
     }
 
 }
