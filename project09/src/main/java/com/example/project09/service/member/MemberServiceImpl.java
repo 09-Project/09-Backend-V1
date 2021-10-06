@@ -105,6 +105,9 @@ public class MemberServiceImpl implements MemberService {
         if(memberRepository.findByName(request.getName()).isPresent())
             throw new MemberNameAlreadyExistsException();
 
+        if(MemberFacade.getMember().getProfileUrl() != null)
+            s3Service.removeFile(MemberFacade.getMember().getProfileUrl().substring(55));
+
         memberRepository.findById(MemberFacade.getMemberId())
                 .map(info -> info.updateInfo(request.getName(), request.getIntroduction(),
                         s3Service.getFileUrl(s3Service.upload(request.getProfileUrl(), "static")))
