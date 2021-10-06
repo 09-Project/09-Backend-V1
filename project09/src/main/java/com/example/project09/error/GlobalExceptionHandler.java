@@ -20,7 +20,7 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(MethodArgumentNotValidException.class)
     public ResponseEntity<ErrorResponse> methodValidException(MethodArgumentNotValidException e) {
         return new ResponseEntity<>(
-                new ErrorResponse("요청이 잘못되었습니다."), HttpStatus.BAD_REQUEST);
+                new ErrorResponse(e.getBindingResult().getAllErrors().get(0).getDefaultMessage()), HttpStatus.BAD_REQUEST);
     }
 
 }
