@@ -102,7 +102,7 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void updateInfo(UpdateInformationRequest request) {
-        if(request.getName() != MemberFacade.getMember().getName()
+        if(!request.getName().equals(MemberFacade.getMember().getName())
                 && memberRepository.findByName(request.getName()).isPresent())
             throw new MemberNameAlreadyExistsException();
 
