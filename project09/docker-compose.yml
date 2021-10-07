@@ -10,7 +10,7 @@ services:
       - .env
 
   redis:
-    image: redis
+    image: rlaqjawls/project09
     build: .
     ports:
     - 6379:6379
