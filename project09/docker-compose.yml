@@ -11,5 +11,6 @@ services:
 
   redis:
     image: redis
+    build: .
     ports:
     - 6379:6379
