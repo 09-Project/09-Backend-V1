@@ -208,7 +208,7 @@ public class PostServiceImpl implements PostService {
                             .build();
                     return response;
                 })
-                .sorted(Comparator.comparing(PostResponse::getCreatedDate).reversed())
+                .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
