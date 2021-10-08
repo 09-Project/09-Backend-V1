@@ -5,6 +5,7 @@ import com.example.project09.security.jwt.JwtTokenProvider;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configuration.WebSecurityConfigurerAdapter;
@@ -36,17 +37,23 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers("/member/auth/signup").permitAll()
-                .antMatchers("/member/auth/login").permitAll()
-                .antMatchers("/member/auth/reissue").permitAll()
-                .antMatchers("/member/{user-id}").permitAll()
+                .antMatchers(HttpMethod.GET,
+                        "/swagger-ui.html",
+                        "/swagger-ui/**",
+                        "/api-docs",
+                        "/api-docs/**").permitAll()
 
-                .antMatchers("/post").permitAll()
-                .antMatchers("/post/search").permitAll()
-                .antMatchers("/post/{post-id}").permitAll()
-                .antMatchers("/post/other").permitAll()
+                .antMatchers(HttpMethod.POST,"/member/auth/signup").permitAll()
+                .antMatchers(HttpMethod.POST,"/member/auth/login").permitAll()
+                .antMatchers(HttpMethod.PUT,"/member/auth/reissue").permitAll()
+                .antMatchers(HttpMethod.GET,"/member/{user-id}").permitAll()
 
-                .antMatchers("/swagger-ui.html", "/swagger-ui/**", "/api-docs", "/api-docs/**").permitAll()
+                .antMatchers(HttpMethod.GET, "/post").permitAll()
+                .antMatchers(HttpMethod.POST, "/post").permitAll()
+                .antMatchers(HttpMethod.POST,"/post/search").permitAll()
+                .antMatchers(HttpMethod.GET,"/post/{post-id}").permitAll()
+                .antMatchers(HttpMethod.GET,"/post/other").permitAll()
+
                 .anyRequest().authenticated()
 
                 .and()
