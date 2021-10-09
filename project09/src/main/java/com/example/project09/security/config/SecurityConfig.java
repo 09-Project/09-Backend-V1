@@ -37,8 +37,7 @@ public class SecurityConfig extends WebSecurityConfigurerAdapter {
 
                 .and()
                 .authorizeRequests()
-                .antMatchers(HttpMethod.GET,
-                        "/swagger-ui.html",
+                .antMatchers("/swagger-ui.html",
                         "/swagger-ui/**",
                         "/api-docs",
                         "/api-docs/**").permitAll()
