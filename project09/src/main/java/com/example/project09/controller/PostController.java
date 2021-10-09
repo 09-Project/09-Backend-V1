@@ -73,6 +73,47 @@ public class PostController {
         postService.modifyPost(request, id);
     }
 
+    @DeleteMapping("/{post-id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "204", description = "상품 삭제하기 성공",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "1.상품이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "S3와의 연결이 실패되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Operation(summary = "상품 삭제하기", description = "원하는 상품을 삭제한다.")
+    public void removePost(
+            @Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id) {
+        postService.removePost(id);
+    }
+
+    @PutMapping("/{post-id}")
+    @ResponseStatus(HttpStatus.CREATED)
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "201", description = "종료 여부 변경 성공",
+                    content = @Content(schema = @Schema(hidden = true))),
+            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "상품이 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Operation(summary = "종료 여부 변경하기", description = "해당 상품이 거래 종료되었다면 Completed로 변경한다.")
+    public void updateCompleted (
+            @Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id) {
+        postService.updateCompleted(id);
+    }
+
     @GetMapping
     @PageableAsQueryParam
     @ApiResponses(value = {
@@ -112,28 +153,6 @@ public class PostController {
     @Operation(summary = "다른 추천 상품 보기", description = "다른 8개의 상품을 최신순으로 정렬해 조회한다.")
     public List<OtherPostResponse> getOtherPosts() {
         return postService.getOtherPosts();
-    }
-
-    @DeleteMapping("/{post-id}")
-    @ResponseStatus(HttpStatus.NO_CONTENT)
-    @ApiResponses(value = {
-            @ApiResponse(responseCode = "204", description = "상품 삭제하기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
-            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "401",
-                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "1.상품이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "500", description = "S3와의 연결이 실패되었습니다.",
-                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
-    })
-    @Operation(summary = "상품 삭제하기", description = "원하는 상품을 삭제한다.")
-    public void removePost(
-            @Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id) {
-        postService.removePost(id);
     }
 
     @PageableAsQueryParam
