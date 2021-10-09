@@ -54,12 +54,6 @@ public class PostServiceImpl implements PostService {
         setPurpose(post);
     }
 
-    @Transactional
-    public void setPurpose(Post post) {
-        if(post.getPrice() == null)
-            post.updatePurpose(Purpose.DONATION);
-    }
-
     @Override
     @Transactional
     public void modifyPost(PostRequest request, Integer id) throws IOException {
@@ -83,6 +77,48 @@ public class PostServiceImpl implements PostService {
 
         imageService.removeFile(id);
         postRepository.deleteById(id);
+    }
+
+    @Override
+    @Transactional
+    public void addLike(Integer id) {
+        if(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent())
+            throw new LikeAlreadyExistsException();
+
+        likeRepository.save(
+                Like.builder()
+                        .post(postRepository.findById(id)
+                                .orElseThrow(PostNotFoundException::new))
+                        .member(MemberFacade.getMember())
+                        .build());
+
+        postRepository.findById(id)
+                .map(post -> {
+                    post.getMember().addLikeCounts();
+                    post.addPostLikeCounts();
+                    return post;
+                })
+                .orElseThrow(PostNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public void removeLike(Integer id) {
+        likeRepository.delete(
+                likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id)
+                        .orElseThrow(LikeNotFoundException::new)
+        );
+        postRepository.findById(id)
+                .map(post -> post.getMember().removeLikeCounts())
+                .orElseThrow(PostNotFoundException::new);
+    }
+
+    @Override
+    @Transactional
+    public void updateCompleted(Integer id) {
+        postRepository.findById(id)
+                .map(post -> post.updateCompleted())
+                .orElseThrow(PostNotFoundException::new);
     }
 
     @Override
@@ -156,40 +192,6 @@ public class PostServiceImpl implements PostService {
     }
 
     @Override
-    @Transactional
-    public void addLike(Integer id) {
-        if(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent())
-            throw new LikeAlreadyExistsException();
-
-        likeRepository.save(
-                Like.builder()
-                        .post(postRepository.findById(id)
-                                .orElseThrow(PostNotFoundException::new))
-                        .member(MemberFacade.getMember())
-                        .build());
-
-        postRepository.findById(id)
-                .map(post -> {
-                    post.getMember().addLikeCounts();
-                    post.addPostLikeCounts();
-                    return post;
-                })
-                .orElseThrow(PostNotFoundException::new);
-    }
-
-    @Override
-    @Transactional
-    public void removeLike(Integer id) {
-        likeRepository.delete(
-                likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id)
-                        .orElseThrow(LikeNotFoundException::new)
-        );
-        postRepository.findById(id)
-                .map(post -> post.getMember().removeLikeCounts())
-                .orElseThrow(PostNotFoundException::new);
-    }
-
-    @Override
     @Transactional(readOnly = true)
     public List<PostResponse> searchPosts(String keyword, Pageable pageable) {
         return postRepository.findByTitleContaining(keyword, pageable)
@@ -211,6 +213,12 @@ public class PostServiceImpl implements PostService {
                 })
                 .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
                 .collect(Collectors.toList());
+    }
+
+    @Transactional
+    public void setPurpose(Post post) {
+        if(post.getPrice() == null)
+            post.updatePurpose(Purpose.DONATION);
     }
 
 }

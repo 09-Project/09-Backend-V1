@@ -12,10 +12,11 @@ public interface PostService {
     void createPost(PostRequest request) throws IOException;
     void modifyPost(PostRequest request, Integer id) throws IOException;
     void removePost(Integer id);
+    void addLike(Integer id);
+    void removeLike(Integer id);
+    void updateCompleted(Integer id);
     List<PostResponse> getAllPosts(Pageable pageable);
     EachPostResponse getEachPost(Integer id);
     List<OtherPostResponse> getOtherPosts();
-    void addLike(Integer id);
-    void removeLike(Integer id);
     List<PostResponse> searchPosts(String keyword, Pageable pageable);
 }
