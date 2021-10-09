@@ -116,9 +116,12 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void updateCompleted(Integer id) {
-        postRepository.findById(id)
-                .map(post -> post.updateCompleted())
+        Post post = postRepository.findById(id)
                 .orElseThrow(PostNotFoundException::new);
+
+        if(post.getCompleted() == Completed.IN_PROGRESS)
+            post.updateCompleted(Completed.IN_PROGRESS);
+        else post.updateCompleted(Completed.COMPLETED);
     }
 
     @Override
