@@ -75,4 +75,9 @@ public class Post extends BaseTimeEntity {
         return likeCounts;
     }
 
+    public Post updateCompleted() {
+        this.completed = Completed.COMPLETED;
+        return this;
+    }
+
 }
