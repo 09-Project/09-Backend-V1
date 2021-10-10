@@ -120,8 +120,8 @@ public class PostServiceImpl implements PostService {
                 .orElseThrow(PostNotFoundException::new);
 
         if(post.getCompleted() == Completed.IN_PROGRESS)
-            post.updateCompleted(Completed.IN_PROGRESS);
-        else post.updateCompleted(Completed.COMPLETED);
+            post.updateCompleted(Completed.COMPLETED);
+        else post.updateCompleted(Completed.IN_PROGRESS);
     }
 
     @Override
