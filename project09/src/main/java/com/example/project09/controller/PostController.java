@@ -16,6 +16,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.core.converters.models.PageableAsQueryParam;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -124,7 +125,7 @@ public class PostController {
     })
     @Operation(summary = "전체 상품 보기", description = "전체 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
     public List<PostResponse> getAllPosts(
-            @Parameter(hidden = true) @PageableDefault(size = 16) Pageable pageable) {
+            @Parameter(hidden = true) @PageableDefault(size = 16, sort = "updatedDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return postService.getAllPosts(pageable);
     }
 
@@ -166,7 +167,7 @@ public class PostController {
     })
     @Operation(summary = "상품 검색하기", description = "키워드가 제목에 포함된 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
     public List<PostResponse> searchPosts(@RequestParam String keyword,
-                                          @Parameter(hidden = true) @PageableDefault(size = 16) Pageable pageable) {
+            @Parameter(hidden = true) @PageableDefault(size = 16, sort = "updatedDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return postService.searchPosts(keyword, pageable);
     }
 
