@@ -22,8 +22,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import java.io.IOException;
-import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -37,7 +35,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void createPost(PostRequest request) throws IOException {
+    public void createPost(PostRequest request) {
         Post post = postRepository.save(Post.builder()
                 .title(request.getTitle())
                 .content(request.getContent())
@@ -56,7 +54,7 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional
-    public void modifyPost(PostRequest request, Integer id) throws IOException {
+    public void modifyPost(PostRequest request, Integer id) {
         Post post = postRepository.findById(id)
                 .map(newPost -> newPost.updatePost(
                         request.getTitle(),

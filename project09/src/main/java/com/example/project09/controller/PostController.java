@@ -47,7 +47,7 @@ public class PostController {
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "상품 올리기", description = "제목, 내용, 가격, 거래 지역, 오픈 채팅방 링크, 상품 이미지, 상품 목적을 올린다.")
-    public void createPost(@ModelAttribute @Valid PostRequest request) throws IOException {
+    public void createPost(@ModelAttribute @Valid PostRequest request) {
         postService.createPost(request);
     }
 
@@ -70,7 +70,7 @@ public class PostController {
     @Operation(summary = "상품 수정하기",
             description = "원하는 상품의 제목, 내용, 가격, 거래 지역, 오픈 채팅방 링크, 상품 이미지, 상품 목적을 수정한다.")
     public void modifyPost(@Parameter(description = "post의 id") @PathVariable(name = "post-id") Integer id,
-                           @ModelAttribute @Valid PostRequest request) throws IOException {
+                           @ModelAttribute @Valid PostRequest request) {
         postService.modifyPost(request, id);
     }
 
