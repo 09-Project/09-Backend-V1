@@ -9,7 +9,7 @@ import java.util.List;
 public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findAll(Pageable pageable);
     List<Post> findByMemberId(Integer id);
-    List<Post> findByTitleContaining(String keyword, Pageable pageable);
+    Page<Post> findByTitleContaining(String keyword, Pageable pageable);
     Integer countByMemberId(Integer id);
     Integer countByMemberIdAndCompleted(Integer id, Completed completed);
 
