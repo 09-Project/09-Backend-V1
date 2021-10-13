@@ -21,7 +21,6 @@ import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
-import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -119,7 +118,7 @@ public class PostController {
     @PageableAsQueryParam
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "전체 상품 불러오기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = PostResponse.class))),
             @ApiResponse(responseCode = "404", description = "이미지가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
@@ -132,7 +131,7 @@ public class PostController {
     @GetMapping("/{post-id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "상품 불러오기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = EachPostResponse.class))),
             @ApiResponse(responseCode = "404",
                     description = "1.상품이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.\t\n3.회원이 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -146,7 +145,7 @@ public class PostController {
     @GetMapping("/other")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "상품 불러오기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = OtherPostResponse.class))),
             @ApiResponse(responseCode = "404",
                     description = "1.이미지가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
@@ -160,7 +159,7 @@ public class PostController {
     @GetMapping("/search")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "검색 결과 불러오기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = PostResponse.class))),
             @ApiResponse(responseCode = "404",
                     description = "이미지가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))

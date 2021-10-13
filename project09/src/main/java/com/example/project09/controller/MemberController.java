@@ -47,7 +47,7 @@ public class MemberController {
     @PostMapping("/auth/login")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "로그인 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = TokenResponse.class))),
             @ApiResponse(responseCode = "401", description = "비밀번호가 일치하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "404", description = "회원이 존재하지 않습니다.",
@@ -61,7 +61,7 @@ public class MemberController {
     @PutMapping("/auth/reissue")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "토큰 재발급 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = TokenResponse.class))),
             @ApiResponse(responseCode = "400", description = "Refresh 토큰의 형태가 잘못되었습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401",
@@ -119,7 +119,7 @@ public class MemberController {
     @GetMapping("/information")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "회원 정보 불러오기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = MemberInfoResponse.class))),
             @ApiResponse(responseCode = "400",
                     description = "1.닉네임은 최대 10자까지 가능합니다.\t\n2.Access 토큰의 형태가 잘못되었습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -137,7 +137,7 @@ public class MemberController {
     @GetMapping("/{member-id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "프로필 불러오기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = MemberProfileResponse.class))),
             @ApiResponse(responseCode = "400",
                     description = "Access 토큰의 형태가 잘못되었습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
@@ -157,7 +157,7 @@ public class MemberController {
     @GetMapping("/me")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "마이페이지 불러오기 성공",
-                    content = @Content(schema = @Schema(hidden = true))),
+                    content = @Content(schema = @Schema(implementation = MemberMyPageResponse.class))),
             @ApiResponse(responseCode = "400",
                     description = "Access 토큰의 형태가 잘못되었습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
