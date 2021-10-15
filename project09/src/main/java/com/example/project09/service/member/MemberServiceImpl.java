@@ -18,8 +18,6 @@ import com.example.project09.payload.auth.response.TokenResponse;
 import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
 import com.example.project09.payload.member.response.MemberInfoResponse;
-import com.example.project09.payload.member.response.MemberLikePostsResponse;
-import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
 import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.security.jwt.JwtTokenProvider;
@@ -125,11 +123,11 @@ public class MemberServiceImpl implements MemberService {
                             .name(member.getName())
                             .profileUrl(member.getProfileUrl())
                             .introduction(member.getIntroduction())
-                            .posts(getMemberPosts())
-                            .postsCount(postRepository.countByMemberId(id))
+                            .allPostsCount(postRepository.countByMemberId(id))
                             .getLikesCount(memberRepository.findById(id).get().getEveryLikeCounts())
                             .inProgressPostsCount(postRepository.countByMemberIdAndCompleted(id, Completed.IN_PROGRESS))
                             .completedPostsCount(postRepository.countByMemberIdAndCompleted(id, Completed.COMPLETED))
+                            .likePostsCount(postRepository.countByMemberId(id))
                             .build();
                     return memberProfileResponse;
                 })
@@ -138,9 +136,69 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
-    public MemberMyPageResponse getMyPage() {
-        return new MemberMyPageResponse(getMemberProfile(MemberFacade.getMemberId()),
-                new MemberLikePostsResponse(likePostCounts(MemberFacade.getMemberId()), getMemberLikePosts()));
+    public List<PostResponse> getMemberInProgressPosts(Integer id) {
+        return postRepository.findByMemberId(id)
+                .stream()
+                .map(post -> {
+                    PostResponse postResponse = PostResponse.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .price(post.getPrice())
+                            .transactionRegion(post.getTransactionRegion())
+                            .purpose(post.getPurpose())
+                            .completed(post.getCompleted())
+                            .createdDate(post.getCreatedDate())
+                            .updatedDate(post.getUpdatedDate())
+                            .image(imageRepository.findByPostId(post.getId())
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .build();
+                    return postResponse;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public List<PostResponse> getMemberCompletedPosts(Integer id) {
+        return postRepository.findByMemberId(id)
+                .stream()
+                .map(post -> {
+                    PostResponse postResponse = PostResponse.builder()
+                            .id(post.getId())
+                            .title(post.getTitle())
+                            .price(post.getPrice())
+                            .transactionRegion(post.getTransactionRegion())
+                            .purpose(post.getPurpose())
+                            .completed(post.getCompleted())
+                            .createdDate(post.getCreatedDate())
+                            .updatedDate(post.getUpdatedDate())
+                            .image(imageRepository.findByPostId(post.getId())
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .build();
+                    return postResponse;
+                })
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public List<PostResponse> getMemberLikePosts() {
+        return likeRepository.findByMemberId(MemberFacade.getMemberId())
+                .stream()
+                .map(like -> {
+                    PostResponse response = PostResponse.builder()
+                            .id(like.getId())
+                            .title(like.getPost().getTitle())
+                            .price(like.getPost().getPrice())
+                            .transactionRegion(like.getPost().getTransactionRegion())
+                            .purpose(like.getPost().getPurpose())
+                            .createdDate(like.getPost().getCreatedDate())
+                            .updatedDate(like.getPost().getUpdatedDate())
+                            .image(imageRepository.findByPostId(like.getPost().getId())
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .build();
+                    return response;
+                })
+                .collect(Collectors.toList());
     }
 
     @Override
@@ -179,49 +237,6 @@ public class MemberServiceImpl implements MemberService {
 
         if (!passwordEncoder.matches(password, member.getPassword()))
             throw new InvalidPasswordException();
-    }
-
-    @Transactional(readOnly = true)
-    public List<PostResponse> getMemberPosts() {
-        return postRepository.findByMemberId(MemberFacade.getMemberId())
-                .stream()
-                .map(post -> {
-                    PostResponse postResponse = PostResponse.builder()
-                            .id(post.getId())
-                            .title(post.getTitle())
-                            .price(post.getPrice())
-                            .transactionRegion(post.getTransactionRegion())
-                            .purpose(post.getPurpose())
-                            .completed(post.getCompleted())
-                            .createdDate(post.getCreatedDate())
-                            .updatedDate(post.getUpdatedDate())
-                            .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
-                            .build();
-                    return postResponse;
-                })
-                .collect(Collectors.toList());
-    }
-
-    @Transactional(readOnly = true)
-    public List<PostResponse> getMemberLikePosts() {
-        return likeRepository.findByMemberId(MemberFacade.getMemberId())
-                .stream()
-                .map(like -> {
-                    PostResponse response = PostResponse.builder()
-                            .id(like.getId())
-                            .title(like.getPost().getTitle())
-                            .price(like.getPost().getPrice())
-                            .transactionRegion(like.getPost().getTransactionRegion())
-                            .purpose(like.getPost().getPurpose())
-                            .createdDate(like.getPost().getCreatedDate())
-                            .updatedDate(like.getPost().getUpdatedDate())
-                            .image(imageRepository.findByPostId(like.getPost().getId())
-                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
-                            .build();
-                    return response;
-                })
-                .collect(Collectors.toList());
     }
 
     @Transactional(readOnly = true)
