@@ -8,7 +8,6 @@ import javax.validation.constraints.Size;
 
 @Getter
 @NoArgsConstructor
-@Schema(description = "회원 가입")
 public class SignupRequest {
 
     @NotBlank

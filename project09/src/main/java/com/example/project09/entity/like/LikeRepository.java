@@ -7,6 +7,4 @@ import java.util.Optional;
 public interface LikeRepository extends JpaRepository<Like, Integer> {
     Optional<Like> findByMemberIdAndPostId(Integer memberId, Integer postId);
     List<Like> findByMemberId(Integer id);
-    Integer countByMemberId(Integer id);
-    void deleteByMemberId(Integer id);
 }
