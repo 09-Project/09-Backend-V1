@@ -139,6 +139,7 @@ public class MemberServiceImpl implements MemberService {
     public List<PostResponse> getMemberInProgressPosts(Integer id) {
         return postRepository.findByMemberId(id)
                 .stream()
+                .filter(post -> post.getCompleted() == Completed.IN_PROGRESS)
                 .map(post -> {
                     PostResponse postResponse = PostResponse.builder()
                             .id(post.getId())
@@ -161,6 +162,7 @@ public class MemberServiceImpl implements MemberService {
     public List<PostResponse> getMemberCompletedPosts(Integer id) {
         return postRepository.findByMemberId(id)
                 .stream()
+                .filter(post -> post.getCompleted() == Completed.COMPLETED)
                 .map(post -> {
                     PostResponse postResponse = PostResponse.builder()
                             .id(post.getId())
