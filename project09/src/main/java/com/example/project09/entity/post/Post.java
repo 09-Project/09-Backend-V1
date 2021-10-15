@@ -6,34 +6,32 @@ import com.example.project09.entity.like.Like;
 import com.example.project09.entity.member.Member;
 import lombok.*;
 import javax.persistence.*;
-import javax.validation.constraints.NotBlank;
 import java.util.HashSet;
 import java.util.Set;
 
 @Getter
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "tbl_post")
 public class Post extends BaseTimeEntity {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotBlank
-    @Column(length = 40)
+    @Column(length = 40, nullable = false)
     private String title;
 
-    @Column(length = 500)
+    @Column(length = 500, nullable = false)
     private String content;
 
+    @Column(nullable = false)
     private Integer price;
 
-    @NotBlank
+    @Column(nullable = false)
     private String transactionRegion;
 
-    @NotBlank
+    @Column(nullable = false)
     private String openChatLink;
 
     @Enumerated(EnumType.STRING)
