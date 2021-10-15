@@ -27,6 +27,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -155,6 +156,7 @@ public class MemberServiceImpl implements MemberService {
                             .build();
                     return postResponse;
                 })
+                .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -178,6 +180,7 @@ public class MemberServiceImpl implements MemberService {
                             .build();
                     return postResponse;
                 })
+                .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -200,6 +203,7 @@ public class MemberServiceImpl implements MemberService {
                             .build();
                     return response;
                 })
+                .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -239,11 +243,6 @@ public class MemberServiceImpl implements MemberService {
 
         if (!passwordEncoder.matches(password, member.getPassword()))
             throw new InvalidPasswordException();
-    }
-
-    @Transactional(readOnly = true)
-    public Integer likePostCounts(Integer memberId) {
-        return likeRepository.countByMemberId(memberId);
     }
 
 }
