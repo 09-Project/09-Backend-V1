@@ -7,8 +7,8 @@ import com.example.project09.payload.auth.response.TokenResponse;
 import com.example.project09.payload.member.request.UpdateInformationRequest;
 import com.example.project09.payload.member.request.UpdatePasswordRequest;
 import com.example.project09.payload.member.response.MemberInfoResponse;
-import com.example.project09.payload.member.response.MemberMyPageResponse;
 import com.example.project09.payload.member.response.MemberProfileResponse;
+import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.service.member.MemberService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -21,6 +21,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
@@ -154,23 +155,60 @@ public class MemberController {
         return memberService.getMemberProfile(id);
     }
 
-    @GetMapping("/me")
+    @GetMapping("/like")
     @ApiResponses(value = {
-            @ApiResponse(responseCode = "200", description = "마이페이지 불러오기 성공",
-                    content = @Content(schema = @Schema(implementation = MemberMyPageResponse.class))),
+            @ApiResponse(responseCode = "200", description = "찜한 게시글 불러오기 성공",
+                    content = @Content(schema = @Schema(implementation = PostResponse.class))),
             @ApiResponse(responseCode = "400",
                     description = "Access 토큰의 형태가 잘못되었습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
             @ApiResponse(responseCode = "401",
                     description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "1.회원이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
+            @ApiResponse(responseCode = "404", description = "이미지가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
-    @Operation(summary = "마이페이지 보기", description = "자신의 프로필 정보와 찜 목록을 불러온다.")
-    public MemberMyPageResponse getMyPage() {
-        return memberService.getMyPage();
+    @Operation(summary = "찜한 게시글 보기", description = "자신의 찜한 게시글의 목록을 보여준다.")
+    public List<PostResponse> getMemberLikePosts() {
+        return memberService.getMemberLikePosts();
+    }
+
+    @GetMapping("/in-progress/{member-id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "찜한 게시글 불러오기 성공",
+                    content = @Content(schema = @Schema(implementation = PostResponse.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Access 토큰의 형태가 잘못되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "이미지가 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Operation(summary = "진행중인 게시글 보기", description = "해당 회원의 진행중인 게시글의 목록을 보여준다.")
+    public List<PostResponse> getMemberInProgressPosts(
+            @Parameter(description = "member의 id") @PathVariable(name = "member-id") Integer id) {
+        return memberService.getMemberInProgressPosts(id);
+    }
+
+    @GetMapping("/completed/{member-id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "종료된 게시글 불러오기 성공",
+                    content = @Content(schema = @Schema(implementation = PostResponse.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Access 토큰의 형태가 잘못되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "이미지가 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Operation(summary = "종료된 게시글 보기", description = "해당 회원의 종료된 게시글의 목록을 보여준다.")
+    public List<PostResponse> getMemberCompletedPosts(
+            @Parameter(description = "member의 id") @PathVariable(name = "member-id") Integer id) {
+        return memberService.getMemberCompletedPosts(id);
     }
 
 }
