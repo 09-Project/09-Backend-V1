@@ -4,7 +4,7 @@ import com.example.project09.error.ErrorResponse;
 import com.example.project09.payload.auth.request.LoginRequest;
 import com.example.project09.payload.auth.request.SignupRequest;
 import com.example.project09.payload.auth.response.TokenResponse;
-import com.example.project09.service.member.MemberService;
+import com.example.project09.service.auth.AuthService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -21,7 +21,7 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 @Tag(name = "auth", description = "사용자 인증 관련 API")
 public class AuthController {
-    private final MemberService memberService;
+    private final AuthService authService;
 
     @PostMapping("/signup")
     @ResponseStatus(HttpStatus.CREATED)
@@ -35,7 +35,7 @@ public class AuthController {
     })
     @Operation(summary = "회원 가입", description = "닉네임, 아이디, 비밀번호를 입력해서 가입한다.")
     public void signup(@RequestBody @Valid SignupRequest request) {
-        memberService.signup(request);
+        authService.signup(request);
     }
 
     @PostMapping("/login")
@@ -49,7 +49,7 @@ public class AuthController {
     })
     @Operation(summary = "로그인", description = "아이디, 비밀번호를 입력해서 로그인한다.")
     public TokenResponse login(@RequestBody @Valid LoginRequest request) {
-        return memberService.login(request);
+        return authService.login(request);
     }
 
     @PutMapping("/reissue")
@@ -66,7 +66,7 @@ public class AuthController {
     })
     @Operation(summary = "토큰 재발급", description = "Refresh 토큰을 이용해 새로운 Access 토큰을 발급받는다.")
     public TokenResponse reissue(@RequestHeader(name = "x-refresh-token") String token) {
-        return memberService.reissue(token);
+        return authService.reissue(token);
     }
 
 }
