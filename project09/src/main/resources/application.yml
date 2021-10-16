@@ -45,8 +45,9 @@ springdoc:
     groups-order: DESC
   paths-to-match:
     - /post/**
-    - /member/**
     - /like/**
+    - /auth/**
+    - /member/**
 
 jwt:
   header: ${HEADER}
