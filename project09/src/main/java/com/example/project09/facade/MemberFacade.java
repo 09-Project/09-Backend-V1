@@ -25,4 +25,8 @@ public class MemberFacade {
         return getMember().getName();
     }
 
+    public static String getMemberProfileUrl() {
+        return getMember().getProfileUrl();
+    }
+
 }
