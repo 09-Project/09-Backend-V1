@@ -21,4 +21,8 @@ public class MemberFacade {
         return getMember().getId();
     }
 
+    public static String getMemberName() {
+        return getMember().getName();
+    }
+
 }
