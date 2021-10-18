@@ -206,7 +206,7 @@ public class PostServiceImpl implements PostService {
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImagePath).orElseThrow(ImageNotFoundException::new))
+                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
                             .build();
                     return response;
                 })
