@@ -85,8 +85,7 @@ public class PostServiceImpl implements PostService {
 
         likeRepository.save(
                 Like.builder()
-                        .post(postRepository.findById(id)
-                                .orElseThrow(PostNotFoundException::new))
+                        .post(postRepository.findById(id).orElseThrow(PostNotFoundException::new))
                         .member(MemberFacade.getMember())
                         .build());
 
