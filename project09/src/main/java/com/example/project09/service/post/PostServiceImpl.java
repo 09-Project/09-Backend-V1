@@ -165,6 +165,7 @@ public class PostServiceImpl implements PostService {
                             .memberId(post.getMember().getId())
                             .memberName(post.getMember().getName())
                             .memberIntroduction(post.getMember().getIntroduction())
+                            .memberProfile(post.getMember().getProfileUrl())
                             .postsCount(postRepository.countByMemberId(post.getMember().getId()))
                             .everyLikeCounts(post.getMember().getEveryLikeCounts())
                             .build();

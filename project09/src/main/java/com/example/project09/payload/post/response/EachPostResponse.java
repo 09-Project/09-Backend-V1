@@ -25,6 +25,7 @@ public class EachPostResponse {
     private Integer memberId;
     private String memberName;
     private String memberIntroduction;
+    private String memberProfile;
     private Integer postsCount;
     private Integer everyLikeCounts;
 }
