@@ -88,6 +88,25 @@ public class MemberController {
         return memberService.getMemberProfile(id);
     }
 
+    @GetMapping("/my-page")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "마이페이지 불러오기 성공",
+                    content = @Content(schema = @Schema(implementation = MemberProfileResponse.class))),
+            @ApiResponse(responseCode = "400",
+                    description = "Access 토큰의 형태가 잘못되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404",
+                    description = "1.회원이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Operation(summary = "마이페이지 보기", description = "마이페이지의 프로필 정보를 불러온다.")
+    public MemberProfileResponse getMyPage() {
+        return memberService.getMyPage();
+    }
+
     @GetMapping("/in-progress/{member-id}")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "찜한 게시글 불러오기 성공",
