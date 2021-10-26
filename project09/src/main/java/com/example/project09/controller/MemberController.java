@@ -78,8 +78,7 @@ public class MemberController {
             @ApiResponse(responseCode = "401",
                     description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "1.회원이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
+            @ApiResponse(responseCode = "404", description = "회원이 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "프로필 보기", description = "원하는 회원의 프로필 정보를 불러온다.")
@@ -98,8 +97,7 @@ public class MemberController {
             @ApiResponse(responseCode = "401",
                     description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "1.회원이 존재하지 않습니다.\t\n2.이미지가 존재하지 않습니다.",
+            @ApiResponse(responseCode = "404", description = "회원이 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "마이페이지 보기", description = "마이페이지의 프로필 정보를 불러온다.")
