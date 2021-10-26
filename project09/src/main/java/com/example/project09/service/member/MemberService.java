@@ -11,6 +11,7 @@ public interface MemberService {
     void updatePassword(UpdatePasswordRequest request);
     void updateInfo(UpdateInformationRequest request);
     MemberProfileResponse getMemberProfile(Integer id);
+    MemberProfileResponse getMyPage();
     List<PostResponse> getMemberLikePosts();
     List<PostResponse> getMemberInProgressPosts(Integer id);
     List<PostResponse> getMemberCompletedPosts(Integer id);

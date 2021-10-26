@@ -85,6 +85,12 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional(readOnly = true)
+    public MemberProfileResponse getMyPage() {
+        return getMemberProfile(MemberFacade.getMemberId());
+    }
+
+    @Override
+    @Transactional(readOnly = true)
     public List<PostResponse> getMemberInProgressPosts(Integer id) {
         return postRepository.findByMemberId(id)
                 .stream()
