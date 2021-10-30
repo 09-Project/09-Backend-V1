@@ -12,6 +12,7 @@ public interface PostRepository extends JpaRepository<Post, Integer> {
     Page<Post> findByTitleContaining(String keyword, Pageable pageable);
     Integer countByMemberId(Integer id);
     Integer countByMemberIdAndCompleted(Integer id, Completed completed);
+    Long countByTitleContaining(String keyword);
 
     @Query(value = "select * from tbl_post order by id desc limit 8", nativeQuery = true)
     List<Post> getOtherPosts();

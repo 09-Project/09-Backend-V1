@@ -125,6 +125,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResultResponse getAllPosts(Pageable pageable) {
+        long count = postRepository.count();
+
         List<PostResponse> posts = postRepository.findAll(pageable)
                 .stream()
                 .map(post -> {
@@ -144,7 +146,7 @@ public class PostServiceImpl implements PostService {
                 })
                 .collect(Collectors.toList());
 
-        return new PostResultResponse(posts.size(), posts);
+        return new PostResultResponse(count, posts);
     }
 
     @Override
@@ -197,6 +199,8 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional(readOnly = true)
     public PostResultResponse searchPosts(String keyword, Pageable pageable) {
+        long count = postRepository.countByTitleContaining(keyword);
+
         List<PostResponse> posts = postRepository.findByTitleContaining(keyword, pageable)
                 .stream()
                 .map(post -> {
@@ -216,7 +220,7 @@ public class PostServiceImpl implements PostService {
                 })
                 .collect(Collectors.toList());
 
-        return new PostResultResponse(posts.size(), posts);
+        return new PostResultResponse(count, posts);
     }
 
     @Transactional
