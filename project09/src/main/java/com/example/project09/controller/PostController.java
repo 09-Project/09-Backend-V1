@@ -5,6 +5,7 @@ import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.OtherPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
+import com.example.project09.payload.post.response.PostResultResponse;
 import com.example.project09.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -118,12 +119,12 @@ public class PostController {
     @PageableAsQueryParam
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "전체 상품 불러오기 성공",
-                    content = @Content(schema = @Schema(implementation = PostResponse.class))),
+                    content = @Content(schema = @Schema(implementation = PostResultResponse.class))),
             @ApiResponse(responseCode = "404", description = "이미지가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "전체 상품 보기", description = "전체 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
-    public List<PostResponse> getAllPosts(
+    public PostResultResponse getAllPosts(
             @Parameter(hidden = true) @PageableDefault(size = 16, sort = "updatedDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return postService.getAllPosts(pageable);
     }
@@ -159,13 +160,13 @@ public class PostController {
     @GetMapping("/search")
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "검색 결과 불러오기 성공",
-                    content = @Content(schema = @Schema(implementation = PostResponse.class))),
+                    content = @Content(schema = @Schema(implementation = PostResultResponse.class))),
             @ApiResponse(responseCode = "404",
                     description = "이미지가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "상품 검색하기", description = "키워드가 제목에 포함된 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
-    public List<PostResponse> searchPosts(@RequestParam String keyword,
+    public PostResultResponse searchPosts(@RequestParam String keyword,
             @Parameter(hidden = true) @PageableDefault(size = 16, sort = "updatedDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return postService.searchPosts(keyword, pageable);
     }

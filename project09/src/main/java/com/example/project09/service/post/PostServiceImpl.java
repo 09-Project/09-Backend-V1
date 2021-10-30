@@ -17,6 +17,7 @@ import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.OtherPostResponse;
 import com.example.project09.payload.post.response.PostResponse;
+import com.example.project09.payload.post.response.PostResultResponse;
 import com.example.project09.service.image.ImageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -123,8 +124,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> getAllPosts(Pageable pageable) {
-        return postRepository.findAll(pageable)
+    public PostResultResponse getAllPosts(Pageable pageable) {
+        List<PostResponse> posts = postRepository.findAll(pageable)
                 .stream()
                 .map(post -> {
                     PostResponse response = PostResponse.builder()
@@ -142,6 +143,8 @@ public class PostServiceImpl implements PostService {
                     return response;
                 })
                 .collect(Collectors.toList());
+
+        return new PostResultResponse(posts.size(), posts);
     }
 
     @Override
@@ -193,8 +196,8 @@ public class PostServiceImpl implements PostService {
 
     @Override
     @Transactional(readOnly = true)
-    public List<PostResponse> searchPosts(String keyword, Pageable pageable) {
-        return postRepository.findByTitleContaining(keyword, pageable)
+    public PostResultResponse searchPosts(String keyword, Pageable pageable) {
+        List<PostResponse> posts = postRepository.findByTitleContaining(keyword, pageable)
                 .stream()
                 .map(post -> {
                     PostResponse response = PostResponse.builder()
@@ -212,6 +215,8 @@ public class PostServiceImpl implements PostService {
                     return response;
                 })
                 .collect(Collectors.toList());
+
+        return new PostResultResponse(posts.size(), posts);
     }
 
     @Transactional
