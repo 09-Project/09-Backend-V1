@@ -162,6 +162,8 @@ public class PostServiceImpl implements PostService {
                             .openChatLink(post.getOpenChatLink())
                             .purpose(post.getPurpose())
                             .completed(post.getCompleted())
+                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id)
+                                    .isPresent())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())

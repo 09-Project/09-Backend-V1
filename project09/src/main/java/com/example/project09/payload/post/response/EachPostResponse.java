@@ -18,6 +18,7 @@ public class EachPostResponse {
     private String openChatLink;
     private Purpose purpose;
     private Completed completed;
+    private boolean isLiked;
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String image;
