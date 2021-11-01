@@ -127,58 +127,110 @@ public class PostServiceImpl implements PostService {
     public PostResultResponse getAllPosts(Pageable pageable) {
         long count = postRepository.count();
 
-        List<PostResponse> posts = postRepository.findAll(pageable)
-                .stream()
-                .map(post -> {
-                    PostResponse response = PostResponse.builder()
-                            .id(post.getId())
-                            .title(post.getTitle())
-                            .price(post.getPrice())
-                            .transactionRegion(post.getTransactionRegion())
-                            .purpose(post.getPurpose())
-                            .completed(post.getCompleted())
-                            .createdDate(post.getCreatedDate())
-                            .updatedDate(post.getUpdatedDate())
-                            .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
-                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), post.getId()).isPresent())
-                            .build();
-                    return response;
-                })
-                .collect(Collectors.toList());
+        if(MemberFacade.getMember() != null) {
+            List<PostResponse> posts = postRepository.findAll(pageable)
+                    .stream()
+                    .map(post -> {
+                        PostResponse response = PostResponse.builder()
+                                .id(post.getId())
+                                .title(post.getTitle())
+                                .price(post.getPrice())
+                                .transactionRegion(post.getTransactionRegion())
+                                .purpose(post.getPurpose())
+                                .completed(post.getCompleted())
+                                .createdDate(post.getCreatedDate())
+                                .updatedDate(post.getUpdatedDate())
+                                .image(imageRepository.findByPostId(post.getId())
+                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                                .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), post.getId()).isPresent())
+                                .build();
+                        return response;
+                    })
+                    .collect(Collectors.toList());
 
-        return new PostResultResponse(count, posts);
+            return new PostResultResponse(count, posts);
+        } else {
+            List<PostResponse> posts = postRepository.findAll(pageable)
+                    .stream()
+                    .map(post -> {
+                        PostResponse response = PostResponse.builder()
+                                .id(post.getId())
+                                .title(post.getTitle())
+                                .price(post.getPrice())
+                                .transactionRegion(post.getTransactionRegion())
+                                .purpose(post.getPurpose())
+                                .completed(post.getCompleted())
+                                .createdDate(post.getCreatedDate())
+                                .updatedDate(post.getUpdatedDate())
+                                .image(imageRepository.findByPostId(post.getId())
+                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                                .build();
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+
+            return new PostResultResponse(count, posts);
+        }
     }
 
     @Override
     @Transactional(readOnly = true)
     public EachPostResponse getEachPost(Integer id) {
-        return postRepository.findById(id)
-                .map(post -> {
-                    EachPostResponse response = EachPostResponse.builder()
-                            .title(post.getTitle())
-                            .content(post.getContent())
-                            .price(post.getPrice())
-                            .transactionRegion(post.getTransactionRegion())
-                            .openChatLink(post.getOpenChatLink())
-                            .purpose(post.getPurpose())
-                            .completed(post.getCompleted())
-                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent())
-                            .createdDate(post.getCreatedDate())
-                            .updatedDate(post.getUpdatedDate())
-                            .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
-                            .getLikes(post.getLikeCounts())
-                            .memberId(post.getMember().getId())
-                            .memberName(post.getMember().getName())
-                            .memberIntroduction(post.getMember().getIntroduction())
-                            .memberProfile(post.getMember().getProfileUrl())
-                            .postsCount(postRepository.countByMemberId(post.getMember().getId()))
-                            .everyLikeCounts(post.getMember().getEveryLikeCounts())
-                            .build();
-                    return response;
-                })
-                .orElseThrow(PostNotFoundException::new);
+
+        if(MemberFacade.getMember() != null) {
+            return postRepository.findById(id)
+                    .map(post -> {
+                        EachPostResponse response = EachPostResponse.builder()
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .price(post.getPrice())
+                                .transactionRegion(post.getTransactionRegion())
+                                .openChatLink(post.getOpenChatLink())
+                                .purpose(post.getPurpose())
+                                .completed(post.getCompleted())
+                                .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent())
+                                .createdDate(post.getCreatedDate())
+                                .updatedDate(post.getUpdatedDate())
+                                .image(imageRepository.findByPostId(post.getId())
+                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                                .getLikes(post.getLikeCounts())
+                                .memberId(post.getMember().getId())
+                                .memberName(post.getMember().getName())
+                                .memberIntroduction(post.getMember().getIntroduction())
+                                .memberProfile(post.getMember().getProfileUrl())
+                                .postsCount(postRepository.countByMemberId(post.getMember().getId()))
+                                .everyLikeCounts(post.getMember().getEveryLikeCounts())
+                                .build();
+                        return response;
+                    })
+                    .orElseThrow(PostNotFoundException::new);
+        } else {
+            return postRepository.findById(id)
+                    .map(post -> {
+                        EachPostResponse response = EachPostResponse.builder()
+                                .title(post.getTitle())
+                                .content(post.getContent())
+                                .price(post.getPrice())
+                                .transactionRegion(post.getTransactionRegion())
+                                .openChatLink(post.getOpenChatLink())
+                                .purpose(post.getPurpose())
+                                .completed(post.getCompleted())
+                                .createdDate(post.getCreatedDate())
+                                .updatedDate(post.getUpdatedDate())
+                                .image(imageRepository.findByPostId(post.getId())
+                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                                .getLikes(post.getLikeCounts())
+                                .memberId(post.getMember().getId())
+                                .memberName(post.getMember().getName())
+                                .memberIntroduction(post.getMember().getIntroduction())
+                                .memberProfile(post.getMember().getProfileUrl())
+                                .postsCount(postRepository.countByMemberId(post.getMember().getId()))
+                                .everyLikeCounts(post.getMember().getEveryLikeCounts())
+                                .build();
+                        return response;
+                    })
+                    .orElseThrow(PostNotFoundException::new);
+        }
     }
 
     @Override
@@ -203,27 +255,51 @@ public class PostServiceImpl implements PostService {
     public PostResultResponse searchPosts(String keyword, Pageable pageable) {
         long count = postRepository.countByTitleContaining(keyword);
 
-        List<PostResponse> posts = postRepository.findByTitleContaining(keyword, pageable)
-                .stream()
-                .map(post -> {
-                    PostResponse response = PostResponse.builder()
-                            .id(post.getId())
-                            .title(post.getTitle())
-                            .price(post.getPrice())
-                            .transactionRegion(post.getTransactionRegion())
-                            .purpose(post.getPurpose())
-                            .completed(post.getCompleted())
-                            .createdDate(post.getCreatedDate())
-                            .updatedDate(post.getUpdatedDate())
-                            .image(imageRepository.findByPostId(post.getId())
-                                    .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
-                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), post.getId()).isPresent())
-                            .build();
-                    return response;
-                })
-                .collect(Collectors.toList());
+        if(MemberFacade.getMember() != null) {
+            List<PostResponse> posts = postRepository.findByTitleContaining(keyword, pageable)
+                    .stream()
+                    .map(post -> {
+                        PostResponse response = PostResponse.builder()
+                                .id(post.getId())
+                                .title(post.getTitle())
+                                .price(post.getPrice())
+                                .transactionRegion(post.getTransactionRegion())
+                                .purpose(post.getPurpose())
+                                .completed(post.getCompleted())
+                                .createdDate(post.getCreatedDate())
+                                .updatedDate(post.getUpdatedDate())
+                                .image(imageRepository.findByPostId(post.getId())
+                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                                .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), post.getId()).isPresent())
+                                .build();
+                        return response;
+                    })
+                    .collect(Collectors.toList());
 
-        return new PostResultResponse(count, posts);
+            return new PostResultResponse(count, posts);
+        } else {
+            List<PostResponse> posts = postRepository.findByTitleContaining(keyword, pageable)
+                    .stream()
+                    .map(post -> {
+                        PostResponse response = PostResponse.builder()
+                                .id(post.getId())
+                                .title(post.getTitle())
+                                .price(post.getPrice())
+                                .transactionRegion(post.getTransactionRegion())
+                                .purpose(post.getPurpose())
+                                .completed(post.getCompleted())
+                                .createdDate(post.getCreatedDate())
+                                .updatedDate(post.getUpdatedDate())
+                                .image(imageRepository.findByPostId(post.getId())
+                                        .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                                .build();
+                        return response;
+                    })
+                    .collect(Collectors.toList());
+
+            return new PostResultResponse(count, posts);
+        }
+
     }
 
     @Transactional
