@@ -127,7 +127,7 @@ public class PostController {
     })
     @Operation(summary = "전체 상품 보기", description = "전체 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
     public PostResultResponse getAllPosts(
-            @Parameter(hidden = true) @PageableDefault(size = 16, sort = "updatedDate", direction = Sort.Direction.DESC) Pageable pageable) {
+            @Parameter(hidden = true) @PageableDefault(size = 16, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return postService.getAllPosts(pageable);
     }
 
@@ -168,7 +168,7 @@ public class PostController {
     })
     @Operation(summary = "상품 검색하기", description = "키워드가 제목에 포함된 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
     public PostResultResponse searchPosts(@RequestParam String keyword,
-            @Parameter(hidden = true) @PageableDefault(size = 16, sort = "updatedDate", direction = Sort.Direction.DESC) Pageable pageable) {
+            @Parameter(hidden = true) @PageableDefault(size = 16, sort = "createdDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return postService.searchPosts(keyword, pageable);
     }
 

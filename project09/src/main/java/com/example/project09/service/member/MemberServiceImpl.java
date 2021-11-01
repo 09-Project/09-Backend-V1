@@ -110,7 +110,7 @@ public class MemberServiceImpl implements MemberService {
                             .build();
                     return postResponse;
                 })
-                .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
+                .sorted(Comparator.comparing(PostResponse::getCreatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -134,7 +134,7 @@ public class MemberServiceImpl implements MemberService {
                             .build();
                     return postResponse;
                 })
-                .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
+                .sorted(Comparator.comparing(PostResponse::getCreatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
@@ -157,7 +157,7 @@ public class MemberServiceImpl implements MemberService {
                             .build();
                     return response;
                 })
-                .sorted(Comparator.comparing(PostResponse::getUpdatedDate).reversed())
+                .sorted(Comparator.comparing(PostResponse::getCreatedDate).reversed())
                 .collect(Collectors.toList());
     }
 
