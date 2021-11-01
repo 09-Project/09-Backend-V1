@@ -5,6 +5,7 @@ import com.example.project09.entity.image.ImageRepository;
 import com.example.project09.entity.post.Post;
 import com.example.project09.exception.ImageNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import javax.transaction.Transactional;
@@ -48,6 +49,15 @@ public class ImageServiceImpl implements ImageService {
         s3Service.removeFile(imageRepository.findByPostId(postId)
                 .map(image -> image.getImagePath())
                 .orElseThrow(ImageNotFoundException::new));
+    }
+
+    @Override
+    public ResponseEntity<byte[]> downloadFile(Integer postId) {
+        String storedFileName = imageRepository.findByPostId(postId)
+                .map(Image::getImagePath)
+                .orElseThrow(ImageNotFoundException::new);
+
+        return s3Service.download(storedFileName);
     }
 
 }
