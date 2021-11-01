@@ -20,4 +20,5 @@ public class PostResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String image;
+    private boolean isLiked;
 }

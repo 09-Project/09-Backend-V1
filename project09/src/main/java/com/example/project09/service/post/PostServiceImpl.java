@@ -141,6 +141,7 @@ public class PostServiceImpl implements PostService {
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
                                     .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), post.getId()).isPresent())
                             .build();
                     return response;
                 })
@@ -162,8 +163,7 @@ public class PostServiceImpl implements PostService {
                             .openChatLink(post.getOpenChatLink())
                             .purpose(post.getPurpose())
                             .completed(post.getCompleted())
-                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id)
-                                    .isPresent())
+                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent())
                             .createdDate(post.getCreatedDate())
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
@@ -217,6 +217,7 @@ public class PostServiceImpl implements PostService {
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
                                     .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .isLiked(likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), post.getId()).isPresent())
                             .build();
                     return response;
                 })
