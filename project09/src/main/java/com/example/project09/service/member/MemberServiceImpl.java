@@ -76,7 +76,7 @@ public class MemberServiceImpl implements MemberService {
                             .getLikesCount(memberRepository.findById(id).get().getEveryLikeCounts())
                             .inProgressPostsCount(postRepository.countByMemberIdAndCompleted(id, Completed.IN_PROGRESS))
                             .completedPostsCount(postRepository.countByMemberIdAndCompleted(id, Completed.COMPLETED))
-                            .likePostsCount(postRepository.countByMemberId(id))
+                            .likePostsCount(likeRepository.countByMemberId(member.getId()))
                             .build();
                     return memberProfileResponse;
                 })
