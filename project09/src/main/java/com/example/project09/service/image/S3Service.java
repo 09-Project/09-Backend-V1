@@ -44,7 +44,7 @@ public class S3Service {
         try {
             byte[] bytes = IOUtils.toByteArray(oi);
 
-            String fileName = URLEncoder.encode(storedFileName, "UTF-8").replaceAll("\\+", "%20");
+            String fileName = URLEncoder.encode(storedFileName.substring(43), "UTF-8").replaceAll("\\+", "%20");
 
             HttpHeaders httpHeaders = new HttpHeaders();
             httpHeaders.setContentType(MediaType.APPLICATION_OCTET_STREAM);
