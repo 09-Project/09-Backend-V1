@@ -4,8 +4,8 @@ import com.example.project09.error.ErrorResponse;
 import com.example.project09.payload.post.request.PostRequest;
 import com.example.project09.payload.post.response.EachPostResponse;
 import com.example.project09.payload.post.response.OtherPostResponse;
-import com.example.project09.payload.post.response.PostResponse;
 import com.example.project09.payload.post.response.PostResultResponse;
+import com.example.project09.service.image.ImageService;
 import com.example.project09.service.post.PostService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
@@ -20,6 +20,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 import java.util.List;
@@ -30,6 +31,7 @@ import java.util.List;
 @Tag(name = "post", description = "상품 관련 API")
 public class PostController {
     private final PostService postService;
+    private final ImageService imageService;
 
     @ResponseStatus(HttpStatus.CREATED)
     @PostMapping(consumes = "multipart/form-data")
@@ -161,14 +163,31 @@ public class PostController {
     @ApiResponses(value = {
             @ApiResponse(responseCode = "200", description = "검색 결과 불러오기 성공",
                     content = @Content(schema = @Schema(implementation = PostResultResponse.class))),
-            @ApiResponse(responseCode = "404",
-                    description = "이미지가 존재하지 않습니다.",
+            @ApiResponse(responseCode = "404", description = "이미지가 존재하지 않습니다.",
                     content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
     })
     @Operation(summary = "상품 검색하기", description = "키워드가 제목에 포함된 상품을 한 페이지에 16개씩 최신순으로 정렬해 조회한다.")
     public PostResultResponse searchPosts(@RequestParam String keyword,
             @Parameter(hidden = true) @PageableDefault(size = 16, sort = "updatedDate", direction = Sort.Direction.DESC) Pageable pageable) {
         return postService.searchPosts(keyword, pageable);
+    }
+
+    @GetMapping("/download/{post-id}")
+    @ApiResponses(value = {
+            @ApiResponse(responseCode = "200", description = "이미지 다운로드 성공"),
+            @ApiResponse(responseCode = "400", description = "Access 토큰의 형태가 잘못되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "401",
+                    description = "1.Access 토큰이 만료되었습니다.\t\n2.Access 토큰이 유효하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "404", description = "이미지가 존재하지 않습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class))),
+            @ApiResponse(responseCode = "500", description = "S3와의 연결이 실패되었습니다.",
+                    content = @Content(schema = @Schema(implementation = ErrorResponse.class)))
+    })
+    @Operation(summary = "이미지 다운로드하기", description = "원하는 상품의 이미지를 다운로드한다.")
+    public ResponseEntity<byte[]> downloadFile(@PathVariable(name = "post-id") Integer id) {
+        return imageService.downloadFile(id);
     }
 
 }
