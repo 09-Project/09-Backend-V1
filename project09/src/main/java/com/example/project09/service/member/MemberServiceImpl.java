@@ -148,7 +148,7 @@ public class MemberServiceImpl implements MemberService {
                 .stream()
                 .map(like -> {
                     PostResponse response = PostResponse.builder()
-                            .id(like.getId())
+                            .id(like.getPost().getId())
                             .title(like.getPost().getTitle())
                             .price(like.getPost().getPrice())
                             .transactionRegion(like.getPost().getTransactionRegion())
