@@ -69,6 +69,7 @@ public class MemberServiceImpl implements MemberService {
         return memberRepository.findById(id)
                 .map(member -> {
                     MemberProfileResponse memberProfileResponse = MemberProfileResponse.builder()
+                            .memberId(id)
                             .name(member.getName())
                             .profileUrl(member.getProfileUrl())
                             .introduction(member.getIntroduction())
