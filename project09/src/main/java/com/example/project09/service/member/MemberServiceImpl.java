@@ -108,6 +108,7 @@ public class MemberServiceImpl implements MemberService {
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
                                     .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .isLiked(checkLiked(post.getId()))
                             .build();
                     return postResponse;
                 })
@@ -132,6 +133,7 @@ public class MemberServiceImpl implements MemberService {
                             .updatedDate(post.getUpdatedDate())
                             .image(imageRepository.findByPostId(post.getId())
                                     .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .isLiked(checkLiked(post.getId()))
                             .build();
                     return postResponse;
                 })
@@ -155,6 +157,7 @@ public class MemberServiceImpl implements MemberService {
                             .updatedDate(like.getPost().getUpdatedDate())
                             .image(imageRepository.findByPostId(like.getPost().getId())
                                     .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
+                            .isLiked(true)
                             .build();
                     return response;
                 })
@@ -183,6 +186,14 @@ public class MemberServiceImpl implements MemberService {
 
         if (!passwordEncoder.matches(password, member.getPassword()))
             throw new InvalidPasswordException();
+    }
+
+    public boolean checkLiked(Integer id) {
+        if(MemberFacade.getMember() == null) {
+            return false;
+        }
+
+        return likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent();
     }
 
 }

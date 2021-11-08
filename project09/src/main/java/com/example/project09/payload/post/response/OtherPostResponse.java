@@ -13,4 +13,5 @@ public class OtherPostResponse {
     private String title;
     private String image;
     private Completed completed;
+    private boolean isLiked;
 }

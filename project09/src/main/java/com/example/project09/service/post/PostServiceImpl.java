@@ -192,6 +192,7 @@ public class PostServiceImpl implements PostService {
                             .title(post.getTitle())
                             .image(post.getImage().getImageUrl())
                             .completed(post.getCompleted())
+                            .isLiked(checkLiked(post.getId()))
                             .build();
                     return response;
                 })
