@@ -22,7 +22,7 @@ public class EachPostResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String image;
-    private MemberInfo member;
+    private MemberInfo memberInfo;
     private Integer getLikes;
     private Integer postsCount;
     private Integer everyLikeCounts;
