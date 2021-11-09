@@ -22,11 +22,19 @@ public class EachPostResponse {
     private LocalDateTime createdDate;
     private LocalDateTime updatedDate;
     private String image;
+    private MemberInfo member;
     private Integer getLikes;
-    private Integer memberId;
-    private String memberName;
-    private String memberIntroduction;
-    private String memberProfile;
     private Integer postsCount;
     private Integer everyLikeCounts;
+
+    @Getter
+    @Builder
+    @AllArgsConstructor
+    public static class MemberInfo {
+        private Integer memberId;
+        private String memberName;
+        private String memberIntroduction;
+        private String memberProfile;
+    }
+
 }

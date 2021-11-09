@@ -169,10 +169,13 @@ public class PostServiceImpl implements PostService {
                             .image(imageRepository.findByPostId(post.getId())
                                     .map(Image::getImageUrl).orElseThrow(ImageNotFoundException::new))
                             .getLikes(post.getLikeCounts())
-                            .memberId(post.getMember().getId())
-                            .memberName(post.getMember().getName())
-                            .memberIntroduction(post.getMember().getIntroduction())
-                            .memberProfile(post.getMember().getProfileUrl())
+                            .member(
+                                    EachPostResponse.MemberInfo.builder()
+                                            .memberId(post.getMember().getId())
+                                            .memberName(post.getMember().getName())
+                                            .memberIntroduction(post.getMember().getIntroduction())
+                                            .memberProfile(post.getMember().getProfileUrl())
+                                            .build())
                             .postsCount(postRepository.countByMemberId(post.getMember().getId()))
                             .everyLikeCounts(post.getMember().getEveryLikeCounts())
                             .build();
