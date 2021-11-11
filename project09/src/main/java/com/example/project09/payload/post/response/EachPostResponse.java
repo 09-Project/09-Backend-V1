@@ -24,8 +24,7 @@ public class EachPostResponse {
     private String image;
     private MemberInfo memberInfo;
     private Integer getLikes;
-    private Integer postsCount;
-    private Integer everyLikeCounts;
+    private boolean isMine;
 
     @Getter
     @Builder
@@ -35,6 +34,8 @@ public class EachPostResponse {
         private String memberName;
         private String memberIntroduction;
         private String memberProfile;
+        private Integer postsCount;
+        private Integer everyLikeCounts;
     }
 
 }
