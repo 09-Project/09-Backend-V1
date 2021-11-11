@@ -68,9 +68,14 @@ public class Post extends BaseTimeEntity {
         return this;
     }
 
-    public Integer addPostLikeCounts() {
+    public Post addPostLikeCounts() {
         this.likeCounts++;
-        return likeCounts;
+        return this;
+    }
+
+    public Post removeLikeCounts() {
+        this.likeCounts--;
+        return this;
     }
 
     public Post updateCompleted(Completed completed) {
