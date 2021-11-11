@@ -107,6 +107,7 @@ public class PostServiceImpl implements PostService {
                         .orElseThrow(LikeNotFoundException::new)
         );
         postRepository.findById(id)
+                .map(post -> post.removeLikeCounts())
                 .map(post -> post.getMember().removeLikeCounts())
                 .orElseThrow(PostNotFoundException::new);
     }
@@ -175,9 +176,10 @@ public class PostServiceImpl implements PostService {
                                             .memberName(post.getMember().getName())
                                             .memberIntroduction(post.getMember().getIntroduction())
                                             .memberProfile(post.getMember().getProfileUrl())
+                                            .postsCount(postRepository.countByMemberId(post.getMember().getId()))
+                                            .everyLikeCounts(post.getMember().getEveryLikeCounts())
                                             .build())
-                            .postsCount(postRepository.countByMemberId(post.getMember().getId()))
-                            .everyLikeCounts(post.getMember().getEveryLikeCounts())
+                            .isMine(checkMine(id))
                             .build();
                     return response;
                 })
@@ -242,6 +244,16 @@ public class PostServiceImpl implements PostService {
         }
 
         return likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent();
+    }
+
+    public boolean checkMine(Integer id) {
+        if(MemberFacade.getMember() == null) {
+            return false;
+        }
+
+        return postRepository.findById(id)
+                .map(post -> post.getMember().getId().equals(MemberFacade.getMemberId()))
+                .isPresent();
     }
         
 }
