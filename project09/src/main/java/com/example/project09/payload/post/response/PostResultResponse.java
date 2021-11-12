@@ -7,6 +7,7 @@ import java.util.List;
 @Getter
 @AllArgsConstructor
 public class PostResultResponse {
-    private long count;
-    private List<PostResponse> posts;
+    private final long count;
+    private final Integer memberId;
+    private final List<PostResponse> posts;
 }
