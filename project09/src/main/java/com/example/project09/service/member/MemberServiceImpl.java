@@ -180,7 +180,7 @@ public class MemberServiceImpl implements MemberService {
                 .orElseThrow(MemberNotFoundException::new);
     }
 
-    public void checkPassword(String password) {
+    private void checkPassword(String password) {
         Member member = memberRepository.findById(MemberFacade.getMemberId())
                 .orElseThrow(MemberNotFoundException::new);
 
@@ -188,7 +188,7 @@ public class MemberServiceImpl implements MemberService {
             throw new InvalidPasswordException();
     }
 
-    public boolean checkLiked(Integer id) {
+    private boolean checkLiked(Integer id) {
         if(MemberFacade.getMember() == null) {
             return false;
         }
