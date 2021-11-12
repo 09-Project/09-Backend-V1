@@ -60,7 +60,10 @@ public class AuthServiceImpl implements AuthService {
     @Override
     @Transactional
     public TokenResponse reissue(String refreshToken) {
-        tokenProvider.isRefreshToken(refreshToken);
+        if(!tokenProvider.isRefreshToken(refreshToken)) {
+            throw new InvalidTokenException();
+        }
+
         RefreshToken newRefreshToken = refreshTokenRepository.findByRefreshToken(refreshToken)
                 .map(refresh -> refreshTokenRepository.save(
                         refresh.update(REFRESH_TOKEN_EXPIRATION_TIME)
