@@ -153,6 +153,7 @@ public class MemberServiceImpl implements MemberService {
                             .price(like.getPost().getPrice())
                             .transactionRegion(like.getPost().getTransactionRegion())
                             .purpose(like.getPost().getPurpose())
+                            .completed(like.getPost().getCompleted())
                             .createdDate(like.getPost().getCreatedDate())
                             .updatedDate(like.getPost().getUpdatedDate())
                             .image(imageRepository.findByPostId(like.getPost().getId())
