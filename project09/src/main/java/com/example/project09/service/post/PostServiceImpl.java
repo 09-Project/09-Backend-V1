@@ -71,7 +71,7 @@ public class PostServiceImpl implements PostService {
     @Override
     @Transactional
     public void removePost(Integer id) {
-        if(!postRepository.findById(id).isPresent())
+        if(postRepository.findById(id).isEmpty())
             throw new PostNotFoundException();
 
         imageService.removeFile(id);
@@ -148,7 +148,7 @@ public class PostServiceImpl implements PostService {
                 })
                 .collect(Collectors.toList());
 
-        return new PostResultResponse(count, posts);
+        return new PostResultResponse(count, MemberFacade.getMemberId(), posts);
     }
 
     @Override
@@ -229,7 +229,7 @@ public class PostServiceImpl implements PostService {
                 })
                 .collect(Collectors.toList());
 
-        return new PostResultResponse(count, posts);
+        return new PostResultResponse(count, MemberFacade.getMemberId(), posts);
     }
 
     @Transactional
@@ -238,22 +238,17 @@ public class PostServiceImpl implements PostService {
             post.updatePurpose(Purpose.DONATION);
     }
 
-    public boolean checkLiked(Integer id) {
-        if(MemberFacade.getMember() == null) {
-            return false;
-        }
-
+    private boolean checkLiked(Integer id) {
         return likeRepository.findByMemberIdAndPostId(MemberFacade.getMemberId(), id).isPresent();
     }
 
-    public boolean checkMine(Integer id) {
-        if(MemberFacade.getMember() == null) {
-            return false;
-        }
+    private boolean checkMine(Integer id) {
+        Integer memberId = MemberFacade.getMemberId();
 
         return postRepository.findById(id)
-                .map(post -> post.getMember().getId().equals(MemberFacade.getMemberId()))
+                .filter(m -> memberId != null)
+                .map(post -> post.getMember().getId().equals(memberId))
                 .isPresent();
     }
-        
+
 }
