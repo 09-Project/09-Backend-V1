@@ -107,7 +107,7 @@ public class JwtTokenProvider {
                     .parseClaimsJws(refreshToken)
                     .getBody();
 
-            return claims.get("type").equals("refresh") && claims.getExpiration().before(new Date());
+            return claims.get("type").equals("refresh") && !claims.getExpiration().before(new Date());
         } catch (MalformedJwtException | UnsupportedJwtException e) {
             throw new IncorrectTokenException();
         } catch (ExpiredJwtException e) {
