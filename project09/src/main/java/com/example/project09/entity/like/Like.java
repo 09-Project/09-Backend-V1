@@ -10,6 +10,14 @@ import javax.persistence.*;
 @AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Entity(name = "tbl_like")
+@Table(
+        uniqueConstraints = {
+                @UniqueConstraint(
+                        name="like_uk",
+                        columnNames = {"post_id", "member_id"}
+                )
+        }
+)
 public class Like {
 
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
